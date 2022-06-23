@@ -1,0 +1,34 @@
+extends layout
+
+block content
+  h1= title
+
+  form(method='POST' onSubmit='/')
+
+    label(for='difficolta') Scegli la difficoltà 
+    select#difficolta(name='difficolta')
+        option(value='facile') Facile
+        option(value='medio') Medio
+        option(value='difficile') Difficoltà
+
+    br
+    br
+
+    each key in listaCategorie
+        input#cat(type='checkbox' name='cat' value=key)
+        label(for='cat') #{key}
+        br
+    
+    br
+
+    div
+      input#huey(type='radio' name='tempo' value='illimitato' required)
+      label(for='illimitato') Illimitato
+    div
+      input#dewey(type='radio' name='tempo' value='limitato' required)
+      label(for='limitato') Limitato
+
+    br
+
+    input(type='submit' value='Gioca')
+    

@@ -55,8 +55,8 @@ services:
     networks:
       - db
     environment:
-      - COUCHDB_USER=admin
-      - COUCHDB_PASSWORD=admin
+      - COUCHDB_USER=${COUCHDB_USR}
+      - COUCHDB_PASSWORD=${COUCHDB_PSW}
     volumes:
         - ./containers/couchdb/data:/opt/couchdb/data
 
