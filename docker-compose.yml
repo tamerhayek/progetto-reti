@@ -47,7 +47,21 @@ services:
     environment:
       - INSTANCE=node3
 
+  couchserver:
+    build: "./containers/couchdb"
+    restart: always
+    ports:
+      - "5984:5984"
+    networks:
+      - db
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=admin
+    volumes:
+        - ./containers/couchdb/data:/opt/couchdb/data
 
 networks:
   app:
+    driver: bridge
+  db:
     driver: bridge

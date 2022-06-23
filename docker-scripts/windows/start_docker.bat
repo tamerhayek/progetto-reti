@@ -1,2 +1,1 @@
-docker-compose down --rmi "all"
-docker-compose up
+.\remove_only_docker.bat & .\start_only_docker.bat
