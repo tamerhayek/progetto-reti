@@ -1,5 +1,58 @@
 extends layout
 
+block head 
+    title= title 
+    link(rel="stylesheet", href="/stylesheets/index.css")
+
 block content
-  h1= title
-  p Welcome to #{title}
+  // NAVBAR
+  .navbar
+    .navbar-logo
+      a(href='/')
+        img(src='/images/logo.png')
+    .navbar-user
+      a.button(href='/users/login/') Log in
+      a.button(href='/users/signup/') Register
+
+  a#playbutton.playbutton(href='/newSfida/') Gioca
+
+  // HOMEPAGE
+  #homepage.home
+    h1.title Trivia Stack
+    .descrizione
+      h2
+        | Metti alla prova le tue conoscenze ora con questo quiz!
+        br
+        br
+        |               Ti baster&agrave; effettuare il Login e scegliere il tipo di sfida che vuoi intraprendere:
+      h3
+        | - sfida a tempo limitato: rispondi a pi&ugrave; domande che puoi prima che scada il tempo a disposizione!
+        br
+        |             - sfida a tempo illimitato: alla prima risposta errata il gioco sar&agrave; finito!
+    hr
+    .top3
+      h1 TOP 3
+      table
+        tbody
+          tr
+            td  1 - Username1
+          tr
+            td  2 - Username2
+          tr
+            td  3 - Username3
+
+  // FOOTER
+  .footer
+    .copyright
+      p  &copy; Reti di calcolatori 2021/2022
+    .loghi
+      a(href='')
+        img(alt='Logo Facebook' src='/images/facebook.png')
+      a(href='')
+        img(alt='Logo Instagram' src='/images/instagram.png')
+      a(href='')
+        img(alt='Logo Twitter' src='/images/twitter.png')
+
+
+
+

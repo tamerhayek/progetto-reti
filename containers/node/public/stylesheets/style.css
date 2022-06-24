@@ -7,3 +7,71 @@
 a {
   color: #000000;
 }
+
+/* NAVBAR */
+.navbar {
+  width: 100%;
+  height: 70px;
+  display: flex;
+  background-color: #ffffff;
+  z-index: 999;
+  border-bottom:1px solid black;
+}
+
+.navbar-logo {
+  margin-left: 5px;
+  height: 70px;
+}
+
+.navbar-logo > a > img {
+  height: 90%;
+}
+
+.navbar-user {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.navbar-user > a {
+  color: black;
+  text-decoration: none;
+  font-size: 20px;
+  border-radius: 10px;
+  border: 1px solid black;
+  padding: 15px;
+  margin-right: 20px;
+}
+
+
+/* FOOTER */
+.footer{
+  border-top:1px solid black;
+  display: flex;
+  padding: 50px 10px;
+  width: 100%;
+  height: 15vh;
+  align-items: center;
+  color: #000000;
+}
+
+.footer .copyright{
+  width: 30%;
+  padding: 10px;
+  text-align: center;
+  font-size: 20px;
+}
+
+.footer .loghi{
+  display: flex;
+  width: 50%;
+  padding: 20px;
+  justify-content: center;
+}
+
+.footer .loghi img{
+  height: 70px;
+  width: 70px;
+  padding: 10px;
+}
