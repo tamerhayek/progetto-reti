@@ -3,6 +3,9 @@ extends layout
 block head 
     title= title 
     link(rel="stylesheet", href="/stylesheets/auth.css")
+    meta(name='google-signin-client_id' content='187106775972-3rvu6u2p5uuhc8e9i5sq5bvu6v9m02nv.apps.googleusercontent.com')
+    script(src='https://apis.google.com/js/platform.js' async='' defer='')
+
 
 block content
     .container 
@@ -19,6 +22,11 @@ block content
                 input#password(type="password" name="password" placeholder="Inserisci la password") 
                 small#smallPassword
                 button(type="submit") Accedi
+            <hr>
+            <p>Oppure effettua l'accesso con:</p>
+            .g-signin2(data-onsuccess='onSignIn' data-theme='dark')
+
 
 
     script(src="/javascripts/validaLogin.js") 
+     script(src="/javascripts/validaOAuth.js") 
