@@ -51,12 +51,12 @@ router.get("/", function (req, res, next) {
         couch.mango(dbName, mangoQuery, parameters).then(
             ({ data, headers, status }) => {
                 if (status == 200 && data.docs.length) {
-                    res.render("user", {
+                    res.render("users", {
                         title: "Titolo | " + req.query.username,
                         user: data.docs[0],
                     });
                 } else {
-                    res.render("user", {
+                    res.render("users", {
                         title: "Titolo | Utente non trovato",
                         user: 0,
                     });
@@ -90,12 +90,12 @@ router.get("/", function (req, res, next) {
                 ({ data, headers, status }) => {
                     if (status == 200 && data.docs.length) {
                         console.log(data.docs);
-                        res.render("user", {
+                        res.render("users", {
                             title: "Titolo | " + req.cookies.username,
                             user: data.docs[0],
                         });
                     } else {
-                        res.render("user", {
+                        res.render("users", {
                             title: "Titolo | Utente non trovato",
                             user: 0,
                         });

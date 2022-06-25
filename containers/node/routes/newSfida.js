@@ -17,14 +17,23 @@ router.get('/', function(req, res, next) {
                     categorieArray.push(key);   //inserisco i nomi delle categorie in un array
                 }
 
+                console.log(categorieArray.toString());
+
                 //traduzione dei nomi delle categorie e rendering della pagina
                 googleTranslate.translate(categorieArray.toString(), 'it', function(err, translation) {
                     //console.log("Italiano :>",translation.translatedText);
-                    categorieArray.push(translation.translatedText);
-                    res.render('newSfida', {
-                        title: 'Impostazioni Sfida',
-                        listaCategorie: translation.translatedText.split(",")
-                    });
+                    try{
+                        categorieArray.push(translation.translatedText);
+                        res.render('newSfida', {
+                            title: 'Impostazioni Sfida',
+                            listaCategorie: translation.translatedText.split(",")
+                        });
+                    }catch(exception_var){  // SE LA RICHIESTA API NON VA A BUON FINE
+                        res.render('newSfida', {
+                            title: 'ERRORE CON L\'API DI GOOGLE'
+                        });
+                    }
+
                 });	
                 
             } else {
@@ -33,7 +42,7 @@ router.get('/', function(req, res, next) {
     });
 });
 
-//GET NEW SFIDA
+//POST NEW SFIDA
 
 router.post('/', function(req, res, next){
     const diff = req.body.difficolta;       // difficoltà selezionata

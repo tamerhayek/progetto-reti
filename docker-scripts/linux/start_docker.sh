@@ -1,4 +1,3 @@
 #!/bin/bash
 
-sudo docker-compose down --rmi "all"
-sudo docker-compose up
+./remove_only_docker.sh && ./start_only_docker.sh
