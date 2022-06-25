@@ -2,6 +2,26 @@ extends layout
 
 block head 
     title= title 
-    link(rel="stylesheet", href="/stylesheets/signup.css")
+    link(rel="stylesheet", href="/stylesheets/auth.css")
 
 block content
+    .container 
+        .container_content
+            h1 Registrazione
+            form(action="/user/signup/", method="post" onsubmit="return validaForm();")
+                input#nome(type="text" name="nome" placeholder="Inserisci il tuo nome") 
+                small#smallNome 
+                input#cognome(type="text" name="cognome" placeholder="Inserisci il tuo cognome") 
+                small#smallCognome
+                input#username(type="text" name="username" placeholder="Inserisci il tuo username") 
+                small#smallUsername
+                input#email(type="email" name="email" placeholder="Inserisci la tua email") 
+                small#smallEmail
+                input#password(type="password" name="password" placeholder="Inserisci la password") 
+                small#smallPassword
+                input#confermaPassword(type="password" name="confermaPassword" placeholder="Conferma la tua password") 
+                small#smallConfermaPassword
+                button(type="submit") Registrati
+
+
+    script(src="/javascripts/validaRegistrazione.js") 

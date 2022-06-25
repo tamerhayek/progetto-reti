@@ -2,6 +2,18 @@ extends layout
 
 block head 
     title= title 
-    link(rel="stylesheet", href="/stylesheets/login.css")
+    link(rel="stylesheet", href="/stylesheets/auth.css")
 
 block content
+    .container 
+        .container_content
+            h1 Accesso
+            form(action="/user/login/", method="post" onsubmit="return validaForm();")
+                input#username(type="text" name="username" placeholder="Inserisci il tuo username") 
+                small#smallUsername
+                input#password(type="password" name="password" placeholder="Inserisci la password") 
+                small#smallPassword
+                button(type="submit") Accedi
+
+
+    script(src="/javascripts/validaLogin.js") 

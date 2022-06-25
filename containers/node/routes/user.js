@@ -51,12 +51,12 @@ router.get("/", function (req, res, next) {
         couch.mango(dbName, mangoQuery, parameters).then(
             ({ data, headers, status }) => {
                 if (status == 200 && data.docs.length) {
-                    res.render("users", {
+                    res.render("user", {
                         title: "Titolo | " + req.query.username,
                         user: data.docs[0],
                     });
                 } else {
-                    res.render("users", {
+                    res.render("user", {
                         title: "Titolo | Utente non trovato",
                         user: 0,
                     });
@@ -90,12 +90,12 @@ router.get("/", function (req, res, next) {
                 ({ data, headers, status }) => {
                     if (status == 200 && data.docs.length) {
                         console.log(data.docs);
-                        res.render("users", {
+                        res.render("user", {
                             title: "Titolo | " + req.cookies.username,
                             user: data.docs[0],
                         });
                     } else {
-                        res.render("users", {
+                        res.render("user", {
                             title: "Titolo | Utente non trovato",
                             user: 0,
                         });
@@ -107,7 +107,7 @@ router.get("/", function (req, res, next) {
                 }
             );
         } else {
-            res.redirect("/users/login");
+            res.redirect("/user/login");
         }
     }
 });
@@ -119,11 +119,57 @@ router.get("/login/", function (req, res, next) {
     });
 });
 
+/* POST login. */
+router.post("/login/", function (req, res, next) {
+    /*const mangoQuery = {
+        selector: {
+            username: { $eq: req.body.username },
+            password: { $eq: req.body.password }
+        },
+        fields: [
+            "username",
+            "password"
+        ],
+        sort: [],
+        limit: 1,
+        skip: 0,
+        execution_stats: true,
+    };
+    couch.mango(dbName, mangoQuery, parameters).then(
+        ({ data, headers, status }) => {
+            if (status == 200 && data.docs.length) {
+                console.log(data.docs);
+                res.render("user", {
+                    title: "Titolo | " + req.cookies.username,
+                    user: data.docs[0],
+                });
+                res.cookie("username", req.body.username);
+                res.cookie("password", req.body.password);
+            } else {
+                res.render("user", {
+                    title: "Titolo | Utente non trovato",
+                    user: 0,
+                });
+            }
+        },
+        (err) => {
+            console.log(err);
+            res.redirect("/");
+        }
+    );*/
+    res.send("Utente " + req.body.username);
+});
+
 /* GET home page. */
 router.get("/signup/", function (req, res, next) {
     res.render("signup", {
         title: "Titolo | Signup",
     });
+});
+
+/* POST home page. */
+router.post("/signup/", function (req, res, next) {
+    res.send("Utente " + req.body.username);
 });
 
 module.exports = router;

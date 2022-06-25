@@ -9,37 +9,37 @@
     text-align: center;
 }
 
-.box {
+.container_content {
     padding: 100px;
     border: 2px solid #dedede;
     box-shadow: 10px 10px 5px #dedede;
 }
 
-.box h1 {
+.container_content h1 {
     font-size: 30px;
     text-transform: uppercase;
     padding-bottom: 10px;
 }
 
-.box h2 {
+.container_content h2 {
     font-size: 24px;
     border-radius: 12px;
     padding: 15px;
     margin: 15px;
 }
 
-.box .highscore {
+.container_content .highscore {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.box .highscore .highscore_element {
+.container_content .highscore .highscore_element {
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 10px 30px;
 }
-.box .highscore .highscore_element * {
+.container_content .highscore .highscore_element * {
     padding: 0 5px;
 }
