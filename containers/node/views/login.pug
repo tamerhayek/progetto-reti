@@ -8,6 +8,11 @@ block content
     .container 
         .container_content
             h1 Accesso
+            if notRegistered
+                p Utente non esistente!
+                a(href="/user/signup/") Registrati! 
+            if notCorrect
+                p Password sbagliata!
             form(action="/user/login/", method="post" onsubmit="return validaForm();")
                 input#username(type="text" name="username" placeholder="Inserisci il tuo username") 
                 small#smallUsername

@@ -89,7 +89,6 @@ router.get("/", function (req, res, next) {
             couch.mango(dbName, mangoQuery, parameters).then(
                 ({ data, headers, status }) => {
                     if (status == 200 && data.docs.length) {
-                        console.log(data.docs);
                         res.render("user", {
                             title: "Titolo | " + req.cookies.username,
                             user: data.docs[0],
@@ -121,10 +120,9 @@ router.get("/login/", function (req, res, next) {
 
 /* POST login. */
 router.post("/login/", function (req, res, next) {
-    /*const mangoQuery = {
+    const mangoQuery = {
         selector: {
-            username: { $eq: req.body.username },
-            password: { $eq: req.body.password }
+            username: { $eq: req.body.username }
         },
         fields: [
             "username",
@@ -137,27 +135,33 @@ router.post("/login/", function (req, res, next) {
     };
     couch.mango(dbName, mangoQuery, parameters).then(
         ({ data, headers, status }) => {
-            if (status == 200 && data.docs.length) {
-                console.log(data.docs);
-                res.render("user", {
-                    title: "Titolo | " + req.cookies.username,
-                    user: data.docs[0],
-                });
-                res.cookie("username", req.body.username);
-                res.cookie("password", req.body.password);
+            if (status == 200) {
+                if (data.docs.length) {
+                    if (data.docs[0].password == req.body.password) {
+                        res.cookie("username", req.body.username);
+                        res.cookie("password", req.body.password);
+                        res.redirect("/");
+                    } else {
+                        res.render("login", {
+                            title: "Titolo | Login",
+                            notCorrect: true,
+                        }); 
+                    }
+                } else {
+                    res.render("login", {
+                        title: "Titolo | Login",
+                        notRegistered: true,
+                    });
+                } 
             } else {
-                res.render("user", {
-                    title: "Titolo | Utente non trovato",
-                    user: 0,
-                });
+                res.send("Error");
             }
         },
         (err) => {
             console.log(err);
             res.redirect("/");
         }
-    );*/
-    res.send("Utente " + req.body.username);
+    );
 });
 
 /* GET home page. */

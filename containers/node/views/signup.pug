@@ -8,6 +8,9 @@ block content
     .container 
         .container_content
             h1 Registrazione
+            if registered
+                p Utente esistente!
+                a(href="/user/login/") Accedi!
             form(action="/user/signup/", method="post" onsubmit="return validaForm();")
                 input#nome(type="text" name="nome" placeholder="Inserisci il tuo nome") 
                 small#smallNome 
