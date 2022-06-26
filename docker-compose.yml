@@ -23,6 +23,7 @@ services:
       - "3000"
     networks:
       - app
+      - db
     container_name: "node1"
     environment:
       - INSTANCE=node1
@@ -34,6 +35,7 @@ services:
       - "3000"
     networks:
       - app
+      - db
     environment:
       - INSTANCE=node2
 
@@ -44,6 +46,7 @@ services:
     container_name: "node3"
     networks:
       - app
+      - db
     environment:
       - INSTANCE=node3
 

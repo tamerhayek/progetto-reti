@@ -3,6 +3,8 @@ var router = express.Router();
 var request = require('request');
 require('dotenv').config();
 
+var db = require('../db');
+
 var googleTranslate = require('google-translate')(process.env.GOOGLE_API_KEY);
 
 // GET NEW SFIDA
@@ -48,7 +50,10 @@ router.post('/', function(req, res, next){
     const diff = req.body.difficolta;       // difficoltà selezionata
     const cat = req.body.cat;               // categorie scelte
     const mod = req.body.tempo;             // modalità di gioco
+    const USER_ID = "utente_prova";
     console.log(diff + "\n" + cat + "\n" + mod);
+
+    db.insertDOC("prova", "partita_prova", partita);
 });
 
 module.exports = router;
