@@ -53,7 +53,6 @@ router.post('/', function(req, res, next){
     const USER_ID = "utente_prova";
     console.log(diff + "\n" + cat + "\n" + mod);
 
-    db.insertDOC("prova", "partita_prova", partita);
 });
 
 module.exports = router;

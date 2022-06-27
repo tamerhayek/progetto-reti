@@ -27,6 +27,9 @@ services:
     container_name: "node1"
     environment:
       - INSTANCE=node1
+      - COUCHDB_USER=${COUCHDB_USR}
+      - COUCHDB_PASSWORD=${COUCHDB_PSW}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
   
   node2:
     build: "./containers/node"
@@ -38,6 +41,9 @@ services:
       - db
     environment:
       - INSTANCE=node2
+      - COUCHDB_USER=${COUCHDB_USR}
+      - COUCHDB_PASSWORD=${COUCHDB_PSW}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
 
   node3:
     build: "./containers/node"
@@ -49,6 +55,9 @@ services:
       - db
     environment:
       - INSTANCE=node3
+      - COUCHDB_USER=${COUCHDB_USR}
+      - COUCHDB_PASSWORD=${COUCHDB_PSW}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
 
   couchserver:
     build: "./containers/couchdb"
