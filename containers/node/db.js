@@ -5,16 +5,9 @@ const password = process.env.COUCHDB_PASSWORD;
 
 const db = require('nano')('http://'+ user + ':' + password + '@couchserver:5984/');
 
-function listDatabases(){
-    couch.listDatabases().then(function(dbs){  
-    console.log(dbs);  
-    });  
-}
-
-async function getDOC(dbName, email){
+async function getDOC(dbName, id){
     const conn = db.use(dbName);
-    const doc = await conn.get(email)
-    console.log(doc);
+    const doc = await conn.get(id);
     return doc;
 }
 
@@ -35,24 +28,26 @@ function inserisciUtente(JSON_utente){
     //controlli su JSON_utente
     //  **********************
     //  **********************
-    var utente = {
+
+    /* SCHEMA JSON
+     var utente = {
         _id: JSON_utente.username,
         nome : JSON_utente.nome,
-        email: JSON_utente.email,
         cognome: JSON_utente.cognome,
+        email: JSON_utente.email,
         password: JSON_utente.password,
         highscore_nolimits: JSON_utente.highscore_nolimits,
         highscore_timer: JSON_utente.highscore_timer
-    };
+    }; */
     
-    insertDOC("users", utente);
+    insertDOC("users", JSON_utente);
 }
 
-function getUtente(email){
+function getUtente(id){
     //EVENTUALI CONTROLLI
     //  **********************
     //  **********************
-    return getDOC("users", email);
+    return getDOC("users", id);
 }
 
 //*************************************************************************************************

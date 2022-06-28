@@ -1,0 +1,10 @@
+extends layout
+
+block head  
+    link(rel="stylesheet", href="/stylesheets/auth.css")
+
+block content
+    .container 
+        .container_content
+            h1 Benvenuto #{nome} #{cognome} 
+            a(href="/user/login/") Accedi 

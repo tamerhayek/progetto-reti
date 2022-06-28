@@ -17,8 +17,12 @@ html
         a(href='/')
           img(src='/images/logo.png')
       .navbar-user
-        a.button(href='/user/login/') Login
-        a.button(href='/user/signup/') Signup
+        if logged
+          a.button(href='/user/') Profile
+          a.button(href='/user/logout/') Logout
+        else 
+          a.button(href='/user/login/') Login
+          a.button(href='/user/signup/') Signup
 
     block content
 

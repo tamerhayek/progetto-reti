@@ -62,6 +62,7 @@ services:
   couchserver:
     build: "./containers/couchdb"
     restart: always
+    container_name: "couch"
     ports:
       - "5984:5984"
     networks:

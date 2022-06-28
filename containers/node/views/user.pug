@@ -1,7 +1,6 @@
 extends layout
 
-block head 
-    title= title 
+block head
     link(rel="stylesheet", href="/stylesheets/user.css")
 
 block content
@@ -10,7 +9,7 @@ block content
             if user
                 h1 Profilo Utente
                 h2 #{user.nome} #{user.cognome}
-                h2 ##{user.username}
+                h2 ##{user._id}
                 if user.email
                     h2 #{user.email}
                 .highscore
