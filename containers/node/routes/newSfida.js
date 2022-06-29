@@ -19,16 +19,16 @@ router.get('/', function(req, res, next) {
                     categorieArray.push(key);   //inserisco i nomi delle categorie in un array
                 }
 
-                console.log(categorieArray.toString());
-
                 //traduzione dei nomi delle categorie e rendering della pagina
                 googleTranslate.translate(categorieArray.toString(), 'it', function(err, translation) {
                     //console.log("Italiano :>",translation.translatedText);
                     try{
-                        categorieArray.push(translation.translatedText);
+                        console.log("\n\n" + categorieArray.toString() + "\n " + translation.translatedText + "\n\n");
+                        //categorieArray.push(translation.translatedText);
                         res.render('newSfida', {
                             title: 'Impostazioni Sfida',
-                            listaCategorie: translation.translatedText.split(",")
+                            listaCategorieTradotto: translation.translatedText.split(','),
+                            listaCategorieValue : categorieArray
                         });
                     }catch(exception_var){  // SE LA RICHIESTA API NON VA A BUON FINE
                         res.render('newSfida', {
@@ -50,9 +50,13 @@ router.post('/', function(req, res, next){
     const diff = req.body.difficolta;       // difficoltà selezionata
     const cat = req.body.cat;               // categorie scelte
     const mod = req.body.tempo;             // modalità di gioco
-    const USER_ID = "utente_prova";
-    console.log(diff + "\n" + cat + "\n" + mod);
-
+    const USER_ID = "username,DaPrendereInSESSION";
+    console.log( "\n" + cat.toString().split(' ').join('+').replaceAll('&', 'e') );
+    if(mod == 'limitato'){
+        res.redirect('/sfidaTimer');
+    }else if(mod == 'illimitato'){
+        res.redirect('/sfidaNoLimits?diff=' + diff + '&username=' + USER_ID + '&cat=' + cat.toString().split(' ').join('+').replaceAll('&', 'e'));
+    }
 });
 
 module.exports = router;

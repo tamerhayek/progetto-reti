@@ -1,0 +1,24 @@
+extends layout
+
+block content
+  h1= title
+
+  form(method='POST' onSubmit='/')
+
+    h1= domanda 
+
+    br
+
+    div
+      each key in risposte
+        input#risposta(type='radio' name='risposta' value=key required)
+        label(for=key) #{key}
+      
+      input#risposta(type='radio' name='risposta' value=corretta required)
+      label(for=corretta) #{corretta}
+        
+    
+    br
+
+    input(type='submit' value='Prossima domanda')
+    

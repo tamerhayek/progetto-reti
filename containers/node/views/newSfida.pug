@@ -7,25 +7,27 @@ block content
 
     label(for='difficolta') Scegli la difficoltà 
     select#difficolta(name='difficolta')
-        option(value='facile') Facile
-        option(value='medio') Medio
-        option(value='difficile') Difficoltà
+        option(value='easy') Facile
+        option(value='medium') Medio
+        option(value='hard') Difficoltà
 
     br
     br
 
-    each key in listaCategorie
-        input#cat(type='checkbox' name='cat' value=key)
+    - var i = 0
+    each key in listaCategorieTradotto
+        input#cat(type='checkbox' name='cat' value=listaCategorieValue[i])
         label(for='cat') #{key}
+        - i++
         br
     
     br
 
     div
-      input#huey(type='radio' name='tempo' value='illimitato' required)
+      input(type='radio' name='tempo' value='illimitato' required)
       label(for='illimitato') Illimitato
     div
-      input#dewey(type='radio' name='tempo' value='limitato' required)
+      input(type='radio' name='tempo' value='limitato' required)
       label(for='limitato') Limitato
 
     br
