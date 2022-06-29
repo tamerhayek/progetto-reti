@@ -30,6 +30,8 @@ services:
       - COUCHDB_USER=${COUCHDB_USR}
       - COUCHDB_PASSWORD=${COUCHDB_PSW}
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
   
   node2:
     build: "./containers/node"
@@ -44,6 +46,8 @@ services:
       - COUCHDB_USER=${COUCHDB_USR}
       - COUCHDB_PASSWORD=${COUCHDB_PSW}
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
 
   node3:
     build: "./containers/node"
@@ -58,6 +62,8 @@ services:
       - COUCHDB_USER=${COUCHDB_USR}
       - COUCHDB_PASSWORD=${COUCHDB_PSW}
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
 
   couchserver:
     build: "./containers/couchdb"

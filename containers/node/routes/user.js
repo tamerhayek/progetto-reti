@@ -1,10 +1,9 @@
-const session = require('express-session');
-const passport = require("passport");
-//const GoogleStrategy = require('passport-google-oauth20').Strategy;
-
 var express = require("express");
 var router = express.Router();
 require("dotenv").config();
+
+var passport = require("passport");
+var GoogleStrategy = require("passport-google-oauth20").Strategy;
 
 var db = require("../db");
 
@@ -107,18 +106,18 @@ router.post("/signup/", function (req, res, next) {
         .catch(function (err) {
             var utente = {
                 _id: username,
-                nome : nome,
+                nome: nome,
                 cognome: cognome,
                 email: email,
                 password: password,
                 highscore_nolimits: 0,
-                highscore_timer: 0
+                highscore_timer: 0,
             };
             db.inserisciUtente(utente);
             res.render("signupSuccess", {
                 title: "Trivia Stack | Registrazione Effettuata",
                 nome: nome,
-                cognome: cognome
+                cognome: cognome,
             });
         });
 });
@@ -129,34 +128,52 @@ router.get("/logout/", function (req, res, next) {
     res.redirect("/");
 });
 
-
 // Richiesta login GOOGLE (OAuth)
 
-var GoogleStrategy = require( 'passport-google-oauth20' ).Strategy;
+passport.serializeUser(function (user, done) {
+    done(null, user);
+});
 
-passport.use(new GoogleStrategy({
-    clientID: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/user/auth/google/callback",
-    passReqToCallback   : true
-    },
-    function(request, accessToken, refreshToken, profile, done) {
-        console.log("............ha funzionato........");
-        console.log(profile);
-        return;
+passport.deserializeUser(function (user, done) {
+    done(null, user);
+});
+
+passport.use(
+    new GoogleStrategy(
+        {
+            clientID: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            callbackURL: "/user/auth/google/callback",
+            passReqToCallback: true,
+        },
+        function (request, accessToken, refreshToken, profile, done) {
+            console.log("ID: " + profile.id);
+            console.log("Name: " + profile.displayName);
+            console.log("Email : " + profile.emails[0].value);
+            return done(null, profile);
+        }
+    )
+);
+
+router.get(
+    "/auth/google",
+    passport.authenticate("google", { scope: ["email", "profile"] })
+);
+
+router.get(
+    "/auth/google/callback",
+    passport.authenticate("google", {
+        successRedirect: "/user/auth/google/success",
+        failureRedirect: "/user/auth/google/failure/",
+    }),
+    function (req, res, next) {
+        res.send("Ciao");
     }
-));
+);
 
-
-router.get('/auth/google',
-    passport.authenticate('google', { scope:
-        [ 'email', 'profile' ] }
-));
-
-router.get( '/auth/google/callback',
-    passport.authenticate( 'google', {
-        successRedirect: '/auth/google/success',
-        failureRedirect: '/auth/google/failure/'
-}));
+/* GET oAuth success. */
+router.get("/auth/google/success/", function (req, res, next) {
+    res.redirect("/");
+});
 
 module.exports = router;

@@ -48,11 +48,7 @@ router.get('/', function(req, res, next) {
                     req.session.prova = 3;
                     req.session.prova2 = 'ciao2';
 
-                    
-
                     console.log("\n\n\nSESSION: " + req.session.prova);
-
-                    res.redirect('/sfidaNoLimits/v')
 
                     try{
                         res.render('sfidaNoLimits', {
@@ -79,7 +75,8 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res, next){
     console.log('/sfidaNoLimits?cat=' + req.query['cat'].toString().split(' ').join('+').replaceAll('+&+', '+e+') + '&diff=' + req.query['diff']);
     //res.redirect('/sfidaNoLimits?cat=' + req.query['cat'].toString().split(' ').join('+').replaceAll('+&+', '+e+') + '&diff=' + req.query['diff']);
-    res.send("1)" + req.session.prova + "\n2)" + req.session.prova2);
+    var prova = req.session.prova;
+    res.send("1)" + prova + "\n2)" + req.session.prova2);
 });
 
 module.exports = router;
