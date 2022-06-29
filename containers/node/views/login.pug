@@ -22,10 +22,7 @@ block content
                 small#smallPassword
                 button(type="submit") Accedi
             <hr>
-            <p>Oppure effettua l'accesso con:</p>
-            .g-signin2(data-onsuccess='onSignIn' data-theme='dark')
-
-
+            a(href='/user/auth/google') Accedi con Google
 
     script(src="/javascripts/validaLogin.js") 
-    script(src="/javascripts/validaOAuth.js") 
+    

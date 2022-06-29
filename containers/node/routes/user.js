@@ -1,3 +1,7 @@
+const session = require('express-session');
+const passport = require("passport");
+//const GoogleStrategy = require('passport-google-oauth20').Strategy;
+
 var express = require("express");
 var router = express.Router();
 require("dotenv").config();
@@ -124,5 +128,35 @@ router.get("/logout/", function (req, res, next) {
     res.clearCookie("username");
     res.redirect("/");
 });
+
+
+// Richiesta login GOOGLE (OAuth)
+
+var GoogleStrategy = require( 'passport-google-oauth20' ).Strategy;
+
+passport.use(new GoogleStrategy({
+    clientID: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    callbackURL: "http://localhost:3000/user/auth/google/callback",
+    passReqToCallback   : true
+    },
+    function(request, accessToken, refreshToken, profile, done) {
+        console.log("............ha funzionato........");
+        console.log(profile);
+        return;
+    }
+));
+
+
+router.get('/auth/google',
+    passport.authenticate('google', { scope:
+        [ 'email', 'profile' ] }
+));
+
+router.get( '/auth/google/callback',
+    passport.authenticate( 'google', {
+        successRedirect: '/auth/google/success',
+        failureRedirect: '/auth/google/failure/'
+}));
 
 module.exports = router;
