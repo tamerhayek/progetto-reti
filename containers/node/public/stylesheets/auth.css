@@ -44,3 +44,12 @@
     font-size: 18px;
     font-style: italic;
 }
+
+.container_content > .signinwith{
+    margin-top: 10px;
+}
+.container_content > .signinwith > a > img{
+    padding: 5px;
+    height: 65px;
+    
+}
