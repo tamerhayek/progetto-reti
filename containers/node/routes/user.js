@@ -5,6 +5,12 @@ require("dotenv").config();
 var passport = require("passport");
 var GoogleStrategy = require("passport-google-oauth20").Strategy;
 
+const session = require('express-session');
+router.use(session({ secret: 'cats', resave: false, saveUninitialized: true }));
+router.use(passport.initialize());
+router.use(passport.session());
+
+
 var db = require("../db");
 
 /* GET user page. */
@@ -130,6 +136,11 @@ router.get("/logout/", function (req, res, next) {
 
 // Richiesta login GOOGLE (OAuth)
 
+function isLoggedIn(req, res, next) {
+  req.user ? next() : res.sendStatus(401);
+}
+
+
 passport.serializeUser(function (user, done) {
   done(null, user);
 });
@@ -144,7 +155,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:80/user/auth/google/callback",
+      callbackURL: "http://localhost:3000/user/auth/google/callback",
       passReqToCallback: true,
     },
     function (request, accessToken, refreshToken, profile, done) {
@@ -193,8 +204,12 @@ router.get(
 );
 
 /* GET oAuth success. */
-router.get("/auth/google/success/", function (req, res, next) {
-  res.cookie("username", 'mariadianacalugaru');
+router.get("/auth/google/success/", isLoggedIn, function (req, res, next) {
+  console.log("sto stampando le informazioni");
+  console.log(req.user.displayName);
+  res.cookie("username", req.user.displayName);
+
+  //res.cookie("username", 'mariadianacalugaru');
   console.log( "sto stampando il cookie ......................." + req.cookies.username);
   res.redirect("/");
 });
