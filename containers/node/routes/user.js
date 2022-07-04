@@ -9,7 +9,8 @@ const session = require('express-session');
 router.use(session({ secret: 'cats', resave: false, saveUninitialized: true }));
 router.use(passport.initialize());
 router.use(passport.session());
-
+var cookieParser = require('cookie-parser');
+router.use(cookieParser());
 
 var db = require("../db");
 
@@ -134,44 +135,31 @@ router.get("/logout/", function (req, res, next) {
   res.redirect("/");
 });
 
-// Richiesta login GOOGLE (OAuth)
+router.get('/success', (req, res) => res.redirect("/"));
+router.get('/error', (req, res) => res.send("error logging in"));
 
-function isLoggedIn(req, res, next) {
-  req.user ? next() : res.sendStatus(401);
-}
-
-
-passport.serializeUser(function (user, done) {
-  done(null, user);
+passport.serializeUser(function(user, cb) {
+  cb(null, user);
 });
 
-passport.deserializeUser(function (user, done) {
-  done(null, user);
+passport.deserializeUser(function(obj, cb) {
+  cb(null, obj);
 });
 
 
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/user/auth/google/callback",
-      passReqToCallback: true,
-    },
-    function (request, accessToken, refreshToken, profile, done) {
-      console.log("ID: " + profile.id);
-      console.log("Name: " + profile.displayName);
-      console.log("Email : " + profile.emails[0].value);
-      console.log(profile);
-
-      // controlla se l'utente esiste nel database, altrimenti lo inserisce
-      db.getUtente(profile.displayName.replaceAll(" ", ""))
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "http://localhost:80/user/auth/google/callback"
+  },
+  function(accessToken, refreshToken, profile, done) {
+      db.getUtente(profile.displayName.toLowerCase().replaceAll(" ", "."))
         .then(function (user) {
             console.log("utente già inserito nel db");
         })
         .catch(function (err) {
           var utente = {
-            _id: profile.displayName.replaceAll(" ", ""),
+            _id: profile.displayName.toLowerCase().replaceAll(" ", "."),
             nome: profile._json.given_name,
             cognome: profile._json.family_name,
             email: profile._json.email,
@@ -181,37 +169,21 @@ passport.use(
           };
           db.inserisciUtente(utente);
         });
-
       return done(null, profile);
-    }
-  )
-);
-
-router.get(
-  "/auth/google",
-  passport.authenticate("google", { scope: ["email", "profile"] })
-);
-
-router.get(
-  "/auth/google/callback",
-  passport.authenticate("google", {
-    successRedirect: "/user/auth/google/success/",
-    failureRedirect: "/user/auth/google/failure/",
-  }),
-  function (req, res, next) {
-    res.send("Ciao");
   }
-);
+));
+ 
+router.get('/auth/google', 
+  passport.authenticate('google', { scope : ['profile', 'email'] }));
+ 
+router.get('/auth/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/user/error' }),
+  function(req, res) {
+    // Successful authentication, redirect success.
 
-/* GET oAuth success. */
-router.get("/auth/google/success/", isLoggedIn, function (req, res, next) {
-  console.log("sto stampando le informazioni");
-  console.log(req.user.displayName);
-  res.cookie("username", req.user.displayName);
-
-  //res.cookie("username", 'mariadianacalugaru');
-  console.log( "sto stampando il cookie ......................." + req.cookies.username);
-  res.redirect("/");
-});
+    res.cookie("username", req.user.displayName.toLowerCase().replaceAll(" ","."));
+    
+    res.redirect('/user/success');
+  });
 
 module.exports = router;
