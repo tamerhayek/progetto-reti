@@ -45,7 +45,6 @@ router.get('/', function(req, res, next) {
                     //console.log(traduzione.slice(2));
 
                     req.session.correctAnswer = traduzione[1];
-                    req.session.prova2 = 'ciao2';
 
                     try{
                         res.render('sfidaNoLimits', {
@@ -71,11 +70,23 @@ router.get('/', function(req, res, next) {
 
 router.post('/', function(req, res, next){
     //console.log('/sfidaNoLimits?cat=' + req.query['cat'].toString().split(' ').join('+').replaceAll('+&+', '+e+') + '&diff=' + req.query['diff']);
-    console.log("\n\n\n----------------------------------------------------\nRISPOSTA\n");
-    console.log("corretta: " + req.session.correctAnswer );
-    console.log("\nrisposta: " + req.query.risposta);
-    console.log("\n\n\n----------------------------------------------------\n");
-    res.redirect('/sfidaNoLimits?cat=' + req.query['cat'].toString().split(' ').join('+').replaceAll('+&+', '+e+') + '&diff=' + req.query['diff']);
+
+    var correctAnswer = req.session.correctAnswer ;
+    var risposta = req.body.risposta;
+
+    console.log("\n\n\n\n------------------------------------------");
+    console.log(correctAnswer + "\n" + risposta);
+    console.log("\n\n\n\n-----------------------------------------\n\n\n\n--");
+
+    if(correctAnswer.toString().replaceAll(" ", "") == risposta.toString().replaceAll(" ", "")){
+        //animazione                (https://socket.io/get-started/chat)
+        //salvataggio punteggio
+        res.redirect('/sfidaNoLimits?cat=' + req.query['cat'].toString().split(' ').join('+').replaceAll('+&+', '+e+') + '&diff=' + req.query['diff']);
+    }else{
+        //esci dalla partita
+        //salva il punteggio noLimits nel db
+        res.redirect('/');
+    }
 });
 
 module.exports = router;

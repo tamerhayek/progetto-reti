@@ -2,6 +2,12 @@ extends layout
 
 block content
   h1= title
+  
+  script(type='text/javascript').
+    function rispostaCorretta(){
+    var obj = document.getElementById("risposta");
+    obj.style.color = "red";
+    }
 
   form(method='POST' onSubmit='/')
 
@@ -16,7 +22,6 @@ block content
       
       input#risposta(type='radio' name='risposta' value=corretta required)
       label(for=corretta) #{corretta}
-        
     
     br
 
