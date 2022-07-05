@@ -1,7 +1,12 @@
 var express = require('express');
 var router = express.Router();
 var request = require('request');
+const crypto = require('crypto');
 require('dotenv').config();
+
+var db = require('../db');
+
+var punteggio = 0;
 
 var googleTranslate = require('google-translate')(process.env.GOOGLE_API_KEY);
 
@@ -13,6 +18,10 @@ router.get('/', function(req, res, next) {
     request(url, function(error, responseQuizAPI, bodyTriviaAPI) {
             if (!error && responseQuizAPI.statusCode == 200) {
                 const json = JSON.parse(bodyTriviaAPI);
+
+                if(req.cookies['correct']===undefined){
+                    punteggio = 0;
+                }
 
                 var id_domanda = json[0].id;
                 var domanda = json[0].question;
@@ -44,16 +53,19 @@ router.get('/', function(req, res, next) {
                     console.log(traduzione[0]);
                     //console.log(traduzione.slice(2));
 
-                    req.session.correctAnswer = traduzione[1];
+                    var hash = crypto.createHash('md5').update(traduzione[1]).digest("hex");
+                    res.cookie('correct', hash);
 
                     try{
                         res.render('sfidaNoLimits', {
                             title: 'SFIDA NO LIMITS',
+                            punteggio: punteggio,
                             domanda: traduzione[0],
                             corretta: traduzione[1],
                             risposte: traduzione.slice(2)
                         });
                     }catch(exception_var){  // SE LA RICHIESTA API NON VA A BUON FINE
+                        res.clearCookie("correct");
                         res.render('sfidaNoLimits', {
                             title: 'ERRORE'
                         });
@@ -61,6 +73,7 @@ router.get('/', function(req, res, next) {
 
                 });	
             } else {
+                res.clearCookie("correct");
                 console.log("Error request");
             }
     });
@@ -68,22 +81,26 @@ router.get('/', function(req, res, next) {
 
 //POST
 
+
 router.post('/', function(req, res, next){
     //console.log('/sfidaNoLimits?cat=' + req.query['cat'].toString().split(' ').join('+').replaceAll('+&+', '+e+') + '&diff=' + req.query['diff']);
 
-    var correctAnswer = req.session.correctAnswer ;
+    var utente = req.cookies['username'];
     var risposta = req.body.risposta;
+    var hashedrisposta = crypto.createHash('md5').update(risposta).digest("hex");
+    var correctAnswer = req.cookies['correct'];
 
     console.log("\n\n\n\n------------------------------------------");
     console.log(correctAnswer + "\n" + risposta);
     console.log("\n\n\n\n-----------------------------------------\n\n\n\n--");
 
-    if(correctAnswer.toString().replaceAll(" ", "") == risposta.toString().replaceAll(" ", "")){
-        //animazione                (https://socket.io/get-started/chat)
-        //salvataggio punteggio
+    if(correctAnswer == hashedrisposta){
+        punteggio+=1;
         res.redirect('/sfidaNoLimits?cat=' + req.query['cat'].toString().split(' ').join('+').replaceAll('+&+', '+e+') + '&diff=' + req.query['diff']);
     }else{
-        //esci dalla partita
+        console.log("sto stampando utente prima dell'update"+utente);
+        db.updateScore(utente, 5);
+        res.clearCookie("correct");
         //salva il punteggio noLimits nel db
         res.redirect('/');
     }

@@ -20,7 +20,23 @@ async function insertDOC(dbName, JSON){
     console.log("RISPOSTA COUCH: " + response);
 }
 
+async function updateField(dbName, field, docName, newValue){
+    const conn = db.use(dbName);
+    conn.insert({"highscore_nolimits": 0}, "diana.calugaru", function (error, foo) {
+        if(error) {
+          return console.log("I failed");
+        }
+        db.insert({foo: 5, "_rev": foo.rev}, "foobar", 
+        function (error, response) {
+          if(!error) {
+            console.log("it worked");
+          } else {
+            console.log("sad panda");
+          }
+        });
+      });
 
+}
 //*************************************************************************************************
 //                                                                                  GESTIONE UTENTI
 
@@ -50,6 +66,16 @@ function getUtente(id){
     return getDOC("users", id);
 }
 
+async function updateScore(username, punteggio){
+    var utente = await getUtente(username);
+    console.log("punteggio attuale" + utente.nome)
+    if(punteggio > utente.highscore_nolimits){
+        updateField("users","highscore_nolimits", username, punteggio);
+    }
+    else{
+        console.log("non serve l'aggirnamento del punteggio");
+    }
+}
 //*************************************************************************************************
 
-module.exports = { inserisciUtente, getUtente }
+module.exports = { inserisciUtente, getUtente, updateScore }
