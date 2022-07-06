@@ -5,9 +5,13 @@ const password = process.env.COUCHDB_PASSWORD;
 
 const db = require('nano')('http://'+ user + ':' + password + '@couchserver:5984/');
 
+
+//FUNZIONI PRIVATE DI ACCESSO AL DB, NON TOCCARE E NON RICHIAMARE DALL'ESTERNO
+
 async function getDOC(dbName, id){
     const conn = db.use(dbName);
     const doc = await conn.get(id);
+    //AGGIUNGERE CONTROLLI SUL DOC
     return doc;
 }
 
@@ -17,33 +21,35 @@ async function insertDOC(dbName, JSON){
     //  **********************
     const conn = db.use(dbName);
     const response = await conn.insert(JSON);
+    //AGGIUNGERE CONTROLLI SULl'INSERIMENTO DEL FILE
     console.log("RISPOSTA COUCH: " + response);
 }
 
-async function updateField(dbName, field, docName, newValue){
+async function updateField(dbName, field, username, newValue){
     const conn = db.use(dbName);
-    conn.insert({"highscore_nolimits": 0}, "diana.calugaru", function (error, foo) {
-        if(error) {
-          return console.log("I failed");
+    getUtente(username).then(function(user) {
+      user[field] = newValue;
+      conn.insert(user, user._id, 
+      function (error, response) {
+        if(!error) {
+          return 0;
+        } else {
+          return -1;
         }
-        db.insert({foo: 5, "_rev": foo.rev}, "foobar", 
-        function (error, response) {
-          if(!error) {
-            console.log("it worked");
-          } else {
-            console.log("sad panda");
-          }
-        });
       });
-
+    });
 }
+
+
+//FUNZIONI PUBBLICHE
+
 //*************************************************************************************************
 //                                                                                  GESTIONE UTENTI
 
 function inserisciUtente(JSON_utente){
     //controlli su JSON_utente
     //  **********************
-    //  **********************
+    //  ********************** 
 
     /* SCHEMA JSON
      var utente = {
@@ -56,6 +62,7 @@ function inserisciUtente(JSON_utente){
         highscore_timer: JSON_utente.highscore_timer
     }; */
     
+    //AGGIUNGERE CONTROLLI SUL RETURN
     insertDOC("users", JSON_utente);
 }
 
@@ -66,15 +73,12 @@ function getUtente(id){
     return getDOC("users", id);
 }
 
-async function updateScore(username, punteggio){
+async function updateScore(username, punteggio, flag){            //si può richiamare con o senza flag, se il flag è 'f' forza l'aggiornamento
     var utente = await getUtente(username);
-    console.log("punteggio attuale" + utente.nome)
-    if(punteggio > utente.highscore_nolimits){
-        updateField("users","highscore_nolimits", username, punteggio);
-    }
-    else{
-        console.log("non serve l'aggirnamento del punteggio");
-    }
+    if(punteggio > utente.highscore_nolimits || flag == 'f')
+        return updateField("users", "highscore_nolimits", username, punteggio);
+    else
+        return -1;
 }
 //*************************************************************************************************
 

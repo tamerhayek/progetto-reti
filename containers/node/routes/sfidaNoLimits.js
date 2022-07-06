@@ -5,35 +5,33 @@ const crypto = require('crypto');
 require('dotenv').config();
 
 var db = require('../db');
-
-var punteggio = 0;
+const { rmSync } = require('fs');
 
 var googleTranslate = require('google-translate')(process.env.GOOGLE_API_KEY);
 
 // GET
 router.get('/', function(req, res, next) {
-    //console.log(req.query['diff'] + "\n" + req.query['username'] + '\n' + req.query['cat'] + '\n');
-    const url = "https://the-trivia-api.com/api/questions?categories=" + req.query['cat'].split(' ').join('_').replaceAll('_e_', '_&_') + "&limit=1&difficulty=" + req.query['diff'];
-    console.log("REQUEST URL TO QUIZ API: \n" + url + "\n");
+    const url = "https://the-trivia-api.com/api/questions?categories="
+                + req.query['cat'].split(' ').join('_').replaceAll('_e_', '_&_') + "&limit=1&difficulty=" + req.query['diff'];
     request(url, function(error, responseQuizAPI, bodyTriviaAPI) {
             if (!error && responseQuizAPI.statusCode == 200) {
                 const json = JSON.parse(bodyTriviaAPI);
 
-                if(req.cookies['correct']===undefined){
-                    punteggio = 0;
+                var punteggio =  req.cookies['punteggio'];
+
+                if(req.cookies['correct']===undefined || req.cookies['isFinished'] == '"false"'){     //inizializzazione counter punteggio
+                    console.log("-------------------------------------\n\n\n\n\n\n\n\n\n Setto il problema a 0");
+                    res.cookie('punteggio', '0');   
+                    punteggio = 0;        
                 }
 
                 var id_domanda = json[0].id;
                 var domanda = json[0].question;
                 var incorrectAnswers = json[0].incorrectAnswers;
                 var correctAnswer = json[0].correctAnswer;
-
-                /*
-                console.log("Domanda: " + domanda + "\n");
-                for(var x in incorrectAnswer)
-                    console.log("Risp. " + incorrectAnswer[x] + "\n");
-                console.log("Risposta: " + correctAnswer + "\n");
-                */
+                
+                res.cookie('isFinished', false);
+                
 
                 var daTradurre = [
                     domanda,                               //POS_0 = DOMANDA
@@ -45,17 +43,14 @@ router.get('/', function(req, res, next) {
 
                 //traduzione e rendering della pagina
                 googleTranslate.translate(daTradurre.toString(), 'it', function(err, translation) {
-                    //console.log("Italiano :>",translation.translatedText.toString()  + "\n");
-                    //console.log("JSON " , JSON.parse(translation.translatedText) + "\n")
                     var traduzione = translation.translatedText.split(",");
                     console.log(traduzione);
                     console.log(traduzione.slice(2));
                     console.log(traduzione[0]);
-                    //console.log(traduzione.slice(2));
 
                     var hash = crypto.createHash('md5').update(traduzione[1]).digest("hex");
                     res.cookie('correct', hash);
-
+                    console.log("-------------------------------------\n\n\n\n\n\n\n\n\n " + punteggio);
                     try{
                         res.render('sfidaNoLimits', {
                             title: 'SFIDA NO LIMITS',
@@ -95,14 +90,21 @@ router.post('/', function(req, res, next){
     console.log("\n\n\n\n-----------------------------------------\n\n\n\n--");
 
     if(correctAnswer == hashedrisposta){
-        punteggio+=1;
+        var x = parseInt(req.cookies['punteggio']);
+        console.log("------------------------------------- " + x);
+        x++;
+        console.log("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"" + x);
+        res.cookie('punteggio', x); 
         res.redirect('/sfidaNoLimits?cat=' + req.query['cat'].toString().split(' ').join('+').replaceAll('+&+', '+e+') + '&diff=' + req.query['diff']);
     }else{
-        console.log("sto stampando utente prima dell'update"+utente);
-        db.updateScore(utente, 5);
-        res.clearCookie("correct");
-        //salva il punteggio noLimits nel db
-        res.redirect('/');
+        var punteggio = parseInt(req.cookies['punteggio']);
+        res.cookie('isFinished', true);
+        res.clearCookie('correct');
+        console.log("sto stampando utente prima dell'update "+utente);
+        console.log("punteggio: " + punteggio);
+        var mex = "";
+        db.updateScore(utente, punteggio);
+        res.redirect('/?msg=' + mex.replaceAll(" ", "+"));
     }
 });
 
