@@ -19,13 +19,11 @@ router.get('/', function(req, res, next) {
 
                 var punteggio =  req.cookies['punteggio'];
 
-                if(req.cookies['correct']===undefined || req.cookies['isFinished'] == '"false"'){     //inizializzazione counter punteggio
-                    console.log("-------------------------------------\n\n\n\n\n\n\n\n\n Setto il problema a 0");
+                if(req.cookies['correct']===undefined || req.cookies['isFinished'] == 'false'){     //inizializzazione counter punteggio
                     res.cookie('punteggio', '0');   
                     punteggio = 0;        
                 }
-
-                var id_domanda = json[0].id;
+                
                 var domanda = json[0].question;
                 var incorrectAnswers = json[0].incorrectAnswers;
                 var correctAnswer = json[0].correctAnswer;
@@ -39,37 +37,51 @@ router.get('/', function(req, res, next) {
                 for(var x in incorrectAnswers)
                     daTradurre.push(incorrectAnswers[x]);            //POS >= 2 RISPOSTE SBAGLIATE
 
-                console.log(daTradurre);
 
                 //traduzione e rendering della pagina
                 googleTranslate.translate(daTradurre.toString(), 'it', function(err, translation) {
-                    var traduzione = translation.translatedText.split(",");
-                    console.log(traduzione);
-                    console.log(traduzione.slice(2));
-                    console.log(traduzione[0]);
+                    if(!err){
+                        var traduzione = translation.translatedText.split(",");
+                
+                        var allanswers = traduzione.slice(2);
+                        allanswers.push(traduzione[1]);
+                        
+                        var randomIndex;
+                        for(var i = allanswers.length; i > 0; ){
+                             // Pick a remaining element.
+                            randomIndex = Math.floor(Math.random() * i);
+                            i--;
+                            // And swap it with the current element.
+                            [allanswers[i], allanswers[randomIndex]] = [
+                              allanswers[randomIndex], allanswers[i]];
+                        }
 
-                    var hash = crypto.createHash('md5').update(traduzione[1]).digest("hex");
-                    res.cookie('correct', hash);
-                    console.log("-------------------------------------\n\n\n\n\n\n\n\n\n " + punteggio);
-                    try{
+
+                        var hash = crypto.createHash('md5').update(traduzione[1]).digest("hex");
+                        res.cookie('correct', hash);
+                        
                         res.render('sfidaNoLimits', {
                             title: 'SFIDA NO LIMITS',
                             punteggio: punteggio,
                             domanda: traduzione[0],
-                            corretta: traduzione[1],
-                            risposte: traduzione.slice(2)
+                            risposte: allanswers
                         });
-                    }catch(exception_var){  // SE LA RICHIESTA API NON VA A BUON FINE
+                    }else{
+                        res.clearCookie('punteggio');
                         res.clearCookie("correct");
-                        res.render('sfidaNoLimits', {
-                            title: 'ERRORE'
+        
+                        res.render('/', {
+                            messaggio: 'Impossibile giocare adesso, riprova più tardi!'
                         });
                     }
-
                 });	
             } else {
+                res.clearCookie('punteggio');
                 res.clearCookie("correct");
-                console.log("Error request");
+
+                res.render('/', {
+                    messaggio: 'Impossibile giocare adesso, riprova più tardi!'
+                });
             }
     });
 });
@@ -78,30 +90,22 @@ router.get('/', function(req, res, next) {
 
 
 router.post('/', function(req, res, next){
-    //console.log('/sfidaNoLimits?cat=' + req.query['cat'].toString().split(' ').join('+').replaceAll('+&+', '+e+') + '&diff=' + req.query['diff']);
-
     var utente = req.cookies['username'];
     var risposta = req.body.risposta;
     var hashedrisposta = crypto.createHash('md5').update(risposta).digest("hex");
     var correctAnswer = req.cookies['correct'];
 
-    console.log("\n\n\n\n------------------------------------------");
-    console.log(correctAnswer + "\n" + risposta);
-    console.log("\n\n\n\n-----------------------------------------\n\n\n\n--");
+    res.cookie('isFinished', true);
 
     if(correctAnswer == hashedrisposta){
         var x = parseInt(req.cookies['punteggio']);
-        console.log("------------------------------------- " + x);
         x++;
-        console.log("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"" + x);
         res.cookie('punteggio', x); 
         res.redirect('/sfidaNoLimits?cat=' + req.query['cat'].toString().split(' ').join('+').replaceAll('+&+', '+e+') + '&diff=' + req.query['diff']);
     }else{
         var punteggio = parseInt(req.cookies['punteggio']);
-        res.cookie('isFinished', true);
         res.clearCookie('correct');
-        console.log("sto stampando utente prima dell'update "+utente);
-        console.log("punteggio: " + punteggio);
+        res.clearCookie('punteggio');
         var mex = "";
         db.updateScore(utente, punteggio);
         res.redirect('/?msg=' + mex.replaceAll(" ", "+"));
