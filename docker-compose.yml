@@ -36,6 +36,7 @@ services:
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - VOICE_RSS_KEY=${VOICE_RSS_KEY}
     depends_on:
       - rabbitmq
   
@@ -55,6 +56,7 @@ services:
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - VOICE_RSS_KEY=${VOICE_RSS_KEY}
     depends_on:
       - rabbitmq
 
@@ -74,6 +76,7 @@ services:
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - VOICE_RSS_KEY=${VOICE_RSS_KEY}
     depends_on:
       - rabbitmq
 

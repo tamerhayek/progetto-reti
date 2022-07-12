@@ -1,0 +1,17 @@
+*{
+    margin: 5px;
+}
+
+.audio{
+    display: none;   
+}
+
+.audioIcon{
+    height: 20px;
+    width: 20px;
+    object-fit: cover;
+}
+
+.audioIcon:hover{
+    cursor: pointer;
+}

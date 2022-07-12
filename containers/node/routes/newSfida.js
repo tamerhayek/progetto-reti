@@ -24,12 +24,13 @@ router.get('/', function(req, res, next) {
                     //console.log("Italiano :>",translation.translatedText);
                     try{
                         console.log("\n\n" + categorieArray.toString() + "\n " + translation.translatedText + "\n\n");
-                        //categorieArray.push(translation.translatedText);
-                        res.render('newSfida', {
+                        //categorieArray.push(translation.translatedText);                         
+                          res.render('newSfida', {
                             title: 'Impostazioni Sfida',
                             listaCategorieTradotto: translation.translatedText.split(','),
                             listaCategorieValue : categorieArray
-                        });
+                          });
+                        
                     }catch(exception_var){  // SE LA RICHIESTA API NON VA A BUON FINE
                         res.render('newSfida', {
                             title: 'ERRORE CON L\'API DI GOOGLE'
@@ -50,12 +51,11 @@ router.post('/', function(req, res, next){
     const diff = req.body.difficolta;       // difficoltà selezionata
     const cat = req.body.cat;               // categorie scelte
     const mod = req.body.tempo;             // modalità di gioco
-    const USER_ID = "username,DaPrendereInSESSION";
     console.log( "\n" + cat.toString().split(' ').join('+').replaceAll('&', 'e') );
     if(mod == 'limitato'){
         res.redirect('/sfidaTimer');
     }else if(mod == 'illimitato'){
-        res.redirect('/sfidaNoLimits?diff=' + diff + '&username=' + USER_ID + '&cat=' + cat.toString().split(' ').join('+').replaceAll('&', 'e'));
+        res.redirect('/sfidaNoLimits?diff=' + diff + '&cat=' + cat.toString().split(' ').join('+').replaceAll('&', 'e'));
     }
 });
 

@@ -5,9 +5,24 @@ const crypto = require('crypto');
 require('dotenv').config();
 
 var db = require('../db');
-const { rmSync } = require('fs');
+var fs = require('fs');
+const { text } = require('express');
 
-var googleTranslate = require('google-translate')(process.env.GOOGLE_API_KEY);
+var googleTranslate = require('google-translate')(process.env.GOOGLE_API_KEY);  
+
+
+var optionsVOICE = {
+    method: 'POST',
+    url: 'https://voicerss-text-to-speech.p.rapidapi.com/',
+    qs: {key: process.env.VOICE_RSS_KEY},
+    headers: {
+    'content-type': 'application/x-www-form-urlencoded',
+    'X-RapidAPI-Key': '3a280afaa7mshbfb05807eb47cb9p1f0696jsnadcd57690913',
+    'X-RapidAPI-Host': 'voicerss-text-to-speech.p.rapidapi.com',
+    useQueryString: true
+    },
+    form: {f: '8khz_8bit_mono', c: 'mp3', r: '0', hl: 'it-it', src: "", b64: 'true'}
+};
 
 // GET
 router.get('/', function(req, res, next) {
@@ -45,7 +60,7 @@ router.get('/', function(req, res, next) {
                 
                         var allanswers = traduzione.slice(2);
                         allanswers.push(traduzione[1]);
-                        
+                    
                         var randomIndex;
                         for(var i = allanswers.length; i > 0; ){
                              // Pick a remaining element.
@@ -58,13 +73,28 @@ router.get('/', function(req, res, next) {
 
 
                         var hash = crypto.createHash('md5').update(traduzione[1]).digest("hex");
+
                         res.cookie('correct', hash);
-                        
-                        res.render('sfidaNoLimits', {
-                            title: 'SFIDA NO LIMITS',
-                            punteggio: punteggio,
-                            domanda: traduzione[0],
-                            risposte: allanswers
+
+                        optionsVOICE.form.src = traduzione[0];
+                        optionsVOICE.form.hl = "it-it";
+                        request(optionsVOICE, function (error, response, domandaIT) {
+                            if (error) domandaIT = "-1";
+                            if(domandaIT == 'ERROR: The API key is not specified!') domandaIT = "-1";
+                            optionsVOICE.form.src = daTradurre[0];
+                            optionsVOICE.form.hl = "en-us";
+                            request(optionsVOICE, function (error, response, domandaEN) {
+                                if (error) domandaEN = "-1";
+                                if(domandaEN == 'ERROR: The API key is not specified!') domandaEN = "-1";
+                                res.render('sfidaNoLimits', {
+                                    title: 'SFIDA NO LIMITS',
+                                    punteggio: punteggio,
+                                    domanda: traduzione[0],
+                                    risposte: allanswers,
+                                    audioDomandaIT: domandaIT,
+                                    audioDomandaEN: domandaEN
+                                });
+                            });
                         });
                     }else{
                         res.clearCookie('punteggio');

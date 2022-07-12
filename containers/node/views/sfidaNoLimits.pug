@@ -1,11 +1,23 @@
 extends layout
 
+block head  
+    link(rel="stylesheet", href="/stylesheets/sfida.css")
+    script(src="/javascripts/sfida.js") 
+
 block content
   h1= title
   
   form(method='POST' onSubmit='/')
 
     h1= domanda 
+    
+    if audioDomandaIT != "-1"
+      img.audioIcon(src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Flag_of_Italy.svg/1280px-Flag_of_Italy.svg.png' onclick='playAudio("domandaIT")')
+      audio#domandaIT.audio(controls='' src=audioDomandaIT)
+
+    if audioDomandaEN != "-1"
+      img.audioIcon(src='https://upload.wikimedia.org/wikipedia/commons/8/83/Flag_of_the_United_Kingdom_%283-5%29.svg' onclick='playAudio("domandaEN")')
+      audio#domandaEN.audio(controls='' src=audioDomandaEN)
 
     br
 
@@ -13,13 +25,9 @@ block content
       each key in risposte
         input#risposta(type='radio' name='risposta' value=key required)
         label(for=key) #{key}
+        br
       
-    br
+    br    
 
     input(type='submit' value='Prossima domanda')
   h2 Punteggio corrente: #{punteggio}
-
-
-
-
-    
