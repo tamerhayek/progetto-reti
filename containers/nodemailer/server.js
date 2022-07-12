@@ -57,7 +57,7 @@ amqplib.connect('amqp://guest:guest@rabbitmq', (err, connection) => {
                 	from: 'triviastack@gmail.com',
                 	to: email,
                     subject: "Conferma avvenuta registrazione",
-                	text: 'Benvenuto/a ' + username + '!\n\n La tua registrazione all\'applicazione Trivia Stack è andata a buon fine!\n Ti basterà accedere per iniziare a giocare.\n\n Trivia Stack Team'
+                	text: 'Benvenuto/a ' + username + '!\n\nLa tua registrazione all\'applicazione Trivia Stack è andata a buon fine!\nTi basterà accedere per iniziare a giocare e cercare di arrivare tra i primi in classifica!\nBuon divertimento!\n\n-Trivia Stack Team'
                 }
 
                 transport.sendMail(mailOptions, (err, info) => {
