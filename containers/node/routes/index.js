@@ -5,6 +5,7 @@ var db = require("../db");
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
+    var msg = req.query.msg ? req.query.msg : false;
     var logged = false;
     if (req.cookies.username) {
         db.client
@@ -24,15 +25,15 @@ router.get("/", function (req, res, next) {
             res.render("index", {
                 title: "Trivia Stack",
                 logged: logged,
-                classifica: result.rows
+                classifica: result.rows,
+                msg: msg
             });
         })
         .catch(function (err) {
             console.log(err.stack);
             res.send("DB Error: "+ err.stack);
         })
-    
-    
+
 });
 
 module.exports = router;

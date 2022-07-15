@@ -100,18 +100,14 @@ router.get('/', function(req, res, next) {
                         res.clearCookie('punteggio');
                         res.clearCookie("correct");
         
-                        res.render('/', {
-                            messaggio: 'Impossibile giocare adesso, riprova più tardi!'
-                        });
+                        res.redirect('/?msg=Impossibile+giocare+adesso,+riprova+più+tardi!')
                     }
                 });	
             } else {
                 res.clearCookie('punteggio');
                 res.clearCookie("correct");
 
-                res.render('/', {
-                    messaggio: 'Impossibile giocare adesso, riprova più tardi!'
-                });
+                res.redirect('/?msg=Impossibile+giocare+adesso,+riprova+più+tardi!')
             }
     });
 });

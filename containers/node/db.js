@@ -81,13 +81,11 @@ function inserisciUtente(JSON_utente){
     insertDOC("users", JSON_utente);
 }
 
-function getUtente(id){
+function getUtenti(){
     //EVENTUALI CONTROLLI
     //  **********************
     //  **********************
-
-
-    return getDOC("users", id);
+    //return getDOC("users", id);
 }
 
 async function updateScore(username, punteggio, flag){            //si può richiamare con o senza flag, se il flag è 'f' forza l'aggiornamento
@@ -99,4 +97,4 @@ async function updateScore(username, punteggio, flag){            //si può rich
 }
 //*************************************************************************************************
 
-module.exports = { inserisciUtente, getUtente, updateScore, client }
+module.exports = { inserisciUtente, getUtenti, updateScore, client }

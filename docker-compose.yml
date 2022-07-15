@@ -109,20 +109,6 @@ services:
       - ./containers/postgres/data:/var/lib/postgresql/data
       - ./containers/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
 
-  couchserver:
-    build: "./containers/couchdb"
-    restart: always
-    container_name: "couch"
-    ports:
-      - "5984:5984"
-    networks:
-      - db
-    environment:
-      - COUCHDB_USER=${COUCHDB_USR}
-      - COUCHDB_PASSWORD=${COUCHDB_PSW}
-    volumes:
-        - ./containers/couchdb/data:/opt/couchdb/data
-
   nodemailer:
     build: "./containers/nodemailer"
     container_name: "nodemailer"
