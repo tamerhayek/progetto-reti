@@ -20,10 +20,9 @@ router.use(cookieParser());
 router.get("/", function (req, res, next) {
     var logged = false;
     if (req.cookies.username) {
-        db
-            .query("select * from users where username = $1", [
-                req.cookies.username,
-            ])
+        db.query("select * from users where username = $1", [
+            req.cookies.username,
+        ])
             .then(function (result) {
                 if (result.rowCount == 1) logged = true;
             })
@@ -33,10 +32,9 @@ router.get("/", function (req, res, next) {
             });
     }
     if (req.query.username) {
-        db
-            .query("select * from users where username = $1", [
-                req.query.username,
-            ])
+        db.query("select * from users where username = $1", [
+            req.query.username,
+        ])
             .then(function (result) {
                 res.render("user", {
                     title: "Trivia Stack | " + req.query.username,
@@ -49,10 +47,9 @@ router.get("/", function (req, res, next) {
                 res.send("DB Error: " + err.stack);
             });
     } else if (req.cookies.username) {
-        db
-            .query("select * from users where username = $1", [
-                req.cookies.username,
-            ])
+        db.query("select * from users where username = $1", [
+            req.cookies.username,
+        ])
             .then(function (result) {
                 res.render("user", {
                     title: "Trivia Stack | " + req.cookies.username,
@@ -72,8 +69,7 @@ router.get("/", function (req, res, next) {
 /* ALL */
 router.get("/all", function (req, res, next) {
     if (req.cookies.username && admins.includes(req.cookies.username)) {
-        db
-            .query("select * from users")
+        db.query("select * from users")
             .then(function (result) {
                 res.render("database", {
                     title: "Trivia Stack | ALL",
@@ -93,12 +89,16 @@ router.get("/all", function (req, res, next) {
 /* GET login. */
 router.get("/login/", function (req, res, next) {
     if (req.cookies.username) {
-        db
-            .query("select * from users where username = $1", [
-                req.cookies.username,
-            ])
+        db.query("select * from users where username = $1", [
+            req.cookies.username,
+        ])
             .then(function (result) {
                 if (result.rowCount == 1) res.redirect("/");
+                else {
+                    res.render("login", {
+                        title: "Trivia Stack | Login",
+                    });
+                }
             })
             .catch(function (err) {
                 console.log(err.stack);
@@ -113,8 +113,7 @@ router.get("/login/", function (req, res, next) {
 
 /* POST login. */
 router.post("/login/", function (req, res, next) {
-    db
-        .query("select * from users where username = $1", [req.body.username])
+    db.query("select * from users where username = $1", [req.body.username])
         .then(function (result) {
             if (result.rowCount == 1) {
                 var passwordHashed = crypto
@@ -153,8 +152,7 @@ router.get("/signup/", function (req, res, next) {
 /* POST signup. */
 router.post("/signup/", function (req, res, next) {
     const { nome, cognome, username, email, password } = req.body;
-    db
-        .query("select * from users where username = $1", [username])
+    db.query("select * from users where username = $1", [username])
         .then(function (result) {
             if (result.rowCount == 1) {
                 res.render("signup", {
@@ -169,8 +167,7 @@ router.post("/signup/", function (req, res, next) {
                 var query = `INSERT INTO users 
                 (nome, cognome, username, email, password, punteggio) VALUES 
                 ('${nome}', '${cognome}', '${username}', '${email}', '${passwordHashed}',  0)`;
-                db
-                    .query(query)
+                db.query(query)
                     .then(function (result) {
                         console.log(result);
                         res.render("signupSuccess", {
@@ -263,10 +260,9 @@ passport.use(
             callbackURL: "http://localhost:80/user/auth/google/callback",
         },
         function (accessToken, refreshToken, profile, done) {
-            db
-                .query("select * from users where username = $1", [
-                    profile.displayName.toLowerCase().replaceAll(" ", "."),
-                ])
+            db.query("select * from users where username = $1", [
+                profile.displayName.toLowerCase().replaceAll(" ", "."),
+            ])
                 .then(function (result) {
                     if (result.rowCount == 1) {
                         console.log("utente già inserito nel db");
@@ -284,8 +280,7 @@ passport.use(
                         }', '', 'google',
                         '${accessToken}', '${refreshToken}',
                         0)`;
-                        db
-                            .query(query)
+                        db.query(query)
                             .then(function (result) {
                                 console.log(result);
                                 return done(null, profile);
@@ -380,7 +375,7 @@ router.get(
             "username",
             req.user.displayName.toLowerCase().replaceAll(" ", ".")
         );
-        
+
         res.redirect("/user/success");
     }
 );

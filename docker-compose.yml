@@ -114,13 +114,21 @@ services:
     networks:
       - amqp
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
   
   rabbitmq:
     build: "./containers/rabbitmq"
     container_name: "rabbitmq"
+    ports:
+      - "5672:5672"
     networks:
       - amqp
+    healthcheck:
+        test: rabbitmq-diagnostics -q ping
+        interval: 5s
+        timeout: 5s
+        retries: 5
 
 networks:
   app:
