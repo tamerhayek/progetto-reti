@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./remove_only_docker.sh && ./start_only_docker.sh
+./remove_only_docker.sh && ./only_docker.sh

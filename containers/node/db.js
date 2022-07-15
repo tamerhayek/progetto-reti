@@ -5,19 +5,20 @@ const POSTGRES_PASSWORD = process.env.POSTGRES_PASSWORD;
 const POSTGRES_DATABASE = process.env.POSTGRES_DATABASE;
 const { Client } = require('pg');
 const client = new Client({
-    user:  POSTGRES_USER,
-    host: "postgres",
-    database: POSTGRES_DATABASE,
-    password: POSTGRES_PASSWORD,
-    port: 5432,
+    user:POSTGRES_USER,
+    host:"postgres",
+    database:POSTGRES_DATABASE,
+    password:POSTGRES_PASSWORD,
+    port: 5432
 });
-
 client.connect();
 
+
+/*
 const user = process.env.COUCHDB_USER;
 const password = process.env.COUCHDB_PASSWORD;
 
-const db = require('nano')('http://'+ user + ':' + password + '@couchserver:5984/');
+const db = require('nano')('http://'+ user + ':' + password + '@couchserver:5984/');*/
 
 
 //FUNZIONI PRIVATE DI ACCESSO AL DB, NON TOCCARE E NON RICHIAMARE DALL'ESTERNO
@@ -84,6 +85,8 @@ function getUtente(id){
     //EVENTUALI CONTROLLI
     //  **********************
     //  **********************
+
+
     return getDOC("users", id);
 }
 
