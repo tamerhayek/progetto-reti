@@ -20,7 +20,7 @@ router.use(cookieParser());
 router.get("/", function (req, res, next) {
     var logged = false;
     if (req.cookies.username) {
-        db.client
+        db
             .query("select * from users where username = $1", [
                 req.cookies.username,
             ])
@@ -33,7 +33,7 @@ router.get("/", function (req, res, next) {
             });
     }
     if (req.query.username) {
-        db.client
+        db
             .query("select * from users where username = $1", [
                 req.query.username,
             ])
@@ -49,7 +49,7 @@ router.get("/", function (req, res, next) {
                 res.send("DB Error: " + err.stack);
             });
     } else if (req.cookies.username) {
-        db.client
+        db
             .query("select * from users where username = $1", [
                 req.cookies.username,
             ])
@@ -72,7 +72,7 @@ router.get("/", function (req, res, next) {
 /* ALL */
 router.get("/all", function (req, res, next) {
     if (req.cookies.username && admins.includes(req.cookies.username)) {
-        db.client
+        db
             .query("select * from users")
             .then(function (result) {
                 res.render("database", {
@@ -93,7 +93,7 @@ router.get("/all", function (req, res, next) {
 /* GET login. */
 router.get("/login/", function (req, res, next) {
     if (req.cookies.username) {
-        db.client
+        db
             .query("select * from users where username = $1", [
                 req.cookies.username,
             ])
@@ -113,7 +113,7 @@ router.get("/login/", function (req, res, next) {
 
 /* POST login. */
 router.post("/login/", function (req, res, next) {
-    db.client
+    db
         .query("select * from users where username = $1", [req.body.username])
         .then(function (result) {
             if (result.rowCount == 1) {
@@ -153,7 +153,7 @@ router.get("/signup/", function (req, res, next) {
 /* POST signup. */
 router.post("/signup/", function (req, res, next) {
     const { nome, cognome, username, email, password } = req.body;
-    db.client
+    db
         .query("select * from users where username = $1", [username])
         .then(function (result) {
             if (result.rowCount == 1) {
@@ -169,7 +169,7 @@ router.post("/signup/", function (req, res, next) {
                 var query = `INSERT INTO users 
                 (nome, cognome, username, email, password, punteggio) VALUES 
                 ('${nome}', '${cognome}', '${username}', '${email}', '${passwordHashed}',  0)`;
-                db.client
+                db
                     .query(query)
                     .then(function (result) {
                         console.log(result);
@@ -263,7 +263,7 @@ passport.use(
             callbackURL: "http://localhost:80/user/auth/google/callback",
         },
         function (accessToken, refreshToken, profile, done) {
-            db.client
+            db
                 .query("select * from users where username = $1", [
                     profile.displayName.toLowerCase().replaceAll(" ", "."),
                 ])
@@ -284,7 +284,7 @@ passport.use(
                         }', '', 'google',
                         '${accessToken}', '${refreshToken}',
                         0)`;
-                        db.client
+                        db
                             .query(query)
                             .then(function (result) {
                                 console.log(result);

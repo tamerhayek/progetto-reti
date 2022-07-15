@@ -32,8 +32,6 @@ services:
     container_name: "node1"
     environment:
       - INSTANCE=node1
-      - COUCHDB_USER=${COUCHDB_USR}
-      - COUCHDB_PASSWORD=${COUCHDB_PSW}
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
@@ -42,8 +40,8 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DATABASE=${POSTGRES_DATABASE}
     depends_on:
-      - rabbitmq
-      - postgres
+      postgres:
+        condition: service_healthy
   
   node2:
     build: "./containers/node"
@@ -56,8 +54,6 @@ services:
       - amqp
     environment:
       - INSTANCE=node2
-      - COUCHDB_USER=${COUCHDB_USR}
-      - COUCHDB_PASSWORD=${COUCHDB_PSW}
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
@@ -66,8 +62,8 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DATABASE=${POSTGRES_DATABASE}
     depends_on:
-      - rabbitmq
-      - postgres
+      postgres:
+        condition: service_healthy
 
   node3:
     build: "./containers/node"
@@ -80,8 +76,6 @@ services:
       - amqp
     environment:
       - INSTANCE=node3
-      - COUCHDB_USER=${COUCHDB_USR}
-      - COUCHDB_PASSWORD=${COUCHDB_PSW}
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
@@ -90,8 +84,8 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DATABASE=${POSTGRES_DATABASE}
     depends_on:
-      - rabbitmq
-      - postgres
+      postgres:
+        condition: service_healthy
 
   postgres:
     build: "./containers/postgres"
@@ -108,6 +102,11 @@ services:
     volumes: 
       - ./containers/postgres/data:/var/lib/postgresql/data
       - ./containers/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+        test: ["CMD-SHELL", "pg_isready"]
+        interval: 5s
+        timeout: 10s
+        retries: 5
 
   nodemailer:
     build: "./containers/nodemailer"

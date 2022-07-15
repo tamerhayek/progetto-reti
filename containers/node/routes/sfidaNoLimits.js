@@ -132,7 +132,7 @@ router.post('/', function(req, res, next){
         var punteggio = parseInt(req.cookies['punteggio']);
         res.clearCookie('correct');
         res.clearCookie('punteggio');
-        db.client
+        db
             .query("update users set punteggio = $1 where username = $2", [ 
                 punteggio,
                 utente,
