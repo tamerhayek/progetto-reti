@@ -10,8 +10,9 @@ block content
             if registered
                 p Utente esistente!
                 a(href="/user/login/") Accedi!
+
             form(action="/user/signup/", method="post" onsubmit="return validaForm();")
-                input#nome(type="text" name="nome" placeholder="Inserisci il tuo nome") 
+                input#nome(type="text" name="nome" placeholder="Inserisci il tuo nome" autofocus) 
                 small#smallNome 
                 input#cognome(type="text" name="cognome" placeholder="Inserisci il tuo cognome") 
                 small#smallCognome
@@ -24,6 +25,10 @@ block content
                 input#confermaPassword(type="password" name="confermaPassword" placeholder="Conferma la tua password") 
                 small#smallConfermaPassword
                 button(type="submit") Registrati
+            .signinwith
+                p Oppure registrati con:
+                a(href='/user/auth/google')
+                    img(src='/images/logingoogle.jpg')
 
 
     script(src="/javascripts/validaRegistrazione.js") 

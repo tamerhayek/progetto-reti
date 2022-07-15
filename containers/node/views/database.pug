@@ -1,0 +1,39 @@
+doctype html
+html
+  head
+    title= title
+
+    // Google Icons
+    link(rel="stylesheet", href="https://fonts.googleapis.com/icon?family=Material+Icons")
+
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/database.css')  
+
+    block head
+  body
+    table
+      thead
+        tr 
+          th #
+          th Nome 
+          th Cognome
+          th Username
+          th Email
+          th Password
+          th Login Method
+          th AT
+          th RT
+          th Punteggio
+      tbody
+        each giocatore, index in users
+          tr
+            td #{index}
+            td #{giocatore.nome}
+            td #{giocatore.cognome}
+            td #{giocatore.username}
+            td #{giocatore.email}
+            td #{giocatore.password}
+            td #{giocatore.logged_with}
+            td #{giocatore.access_token}
+            td #{giocatore.refresh_token}
+            td #{giocatore.punteggio}

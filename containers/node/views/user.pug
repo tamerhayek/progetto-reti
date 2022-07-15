@@ -9,16 +9,11 @@ block content
             if user
                 h1 Profilo Utente
                 h2 #{user.nome} #{user.cognome}
-                h2 ##{user._id}
+                h2 ##{user.username}
                 if user.email
                     h2 #{user.email}
                 .highscore
-                    .highscore_element
-                        span.material-icons all_inclusive
-                        h3 #{user.highscore_nolimits}
-                    .highscore_element
-                        span.material-icons timer
-                        h3 #{user.highscore_timer}
+                    h3 Highscore: #{user.punteggio}
             else
                 h1 Utente non trovato
                 a(href="/") Torna alla homepage 

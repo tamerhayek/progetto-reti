@@ -136,9 +136,24 @@ router.post('/', function(req, res, next){
         var punteggio = parseInt(req.cookies['punteggio']);
         res.clearCookie('correct');
         res.clearCookie('punteggio');
-        var mex = "";
-        db.updateScore(utente, punteggio);
-        res.redirect('/?msg=' + mex.replaceAll(" ", "+"));
+        db.client
+            .query("update users set punteggio = $1 where username = $2", [ 
+                punteggio,
+                utente,
+            ])
+            .then(function (result) {
+                /*res.render('risultati', {
+
+                    punteggio: punteggio,
+                    utente: utente,
+                });*/
+                res.redirect('/');
+            })
+            .catch(function (err) {
+                console.log(err.stack);
+                res.send("DB Error: " + err.stack);
+            });
+        
     }
 });
 

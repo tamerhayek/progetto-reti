@@ -5,32 +5,34 @@ var db = require("../db");
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
-    var msg = "";
-    if(req.query['msg'] != undefined)
-        msg = req.query['msg'];
+    var logged = false;
     if (req.cookies.username) {
-        db.getUtente(req.cookies.username)
-            .then(function (user) {
-                res.render("index", {
-                    title: "Trivia Stack",
-                    logged: true,
-                    messaggio: msg
-                });
-            })
-            .catch(function (err) {
-                res.render("index", {
-                    title: "Trivia Stack",
-                    logged: false,
-                    messaggio: msg
-                });
-            });
-    } else {
-        res.render("index", {
-            title: "Trivia Stack",
-            logged: false,
-            messaggio: msg
-        });
+        db.client
+        .query("select * from users where username = $1", [req.cookies.username])
+        .then(function (result) {
+            if (result.rowCount == 1) logged = true;
+        })
+        .catch(function (err) {
+            console.log(err.stack);
+            res.send("DB Error: "+ err.stack);
+        })
     }
+    
+    db.client
+        .query("select * from users where punteggio > 0 order by punteggio desc limit 3")
+        .then(function (result) {
+            res.render("index", {
+                title: "Trivia Stack",
+                logged: logged,
+                classifica: result.rows
+            });
+        })
+        .catch(function (err) {
+            console.log(err.stack);
+            res.send("DB Error: "+ err.stack);
+        })
+    
+    
 });
 
 module.exports = router;

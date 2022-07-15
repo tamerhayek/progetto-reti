@@ -16,18 +16,16 @@ block content
             if notCorrect
                 p Password sbagliata!
             form(action="/user/login/", method="post" onsubmit="return validaForm();")
-                input#username(type="text" name="username" placeholder="Inserisci il tuo username") 
+                input#username(type="text" name="username" placeholder="Inserisci il tuo username" autofocus) 
                 small#smallUsername
                 input#password(type="password" name="password" placeholder="Inserisci la password") 
                 small#smallPassword
                 button(type="submit") Accedi
-              
             .signinwith
                 p Oppure accedi con:
                 a(href='/user/auth/google')
                     img(src='/images/logingoogle.jpg')
-                a(href='')
-                    img(src='/images/loginfacebook.png')
+            
 
 
     script(src="/javascripts/validaLogin.js") 

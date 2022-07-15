@@ -1,4 +1,5 @@
 const PORT = 3000;
+require("dotenv").config();
 
 var createError = require('http-errors');
 var express = require('express');
@@ -24,17 +25,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(session({
+  secret: "secret",
+  cookie: {
+    secure: false,
+    resave: false,
+    saveUninitialized: false,
+    httpOnly: true,
+    maxAge: 30000
+  }
+}));
 
-app.use(session(
-  {
-   secret: "SECRET",
-   resave: false, 
-   saveUninitialized: true,
-   cookie: { 
-    maxAge: 600000
-  }
-  }
-));
 
 app.use('/', indexRouter);
 app.use('/user', usersRouter);
