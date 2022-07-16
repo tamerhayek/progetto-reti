@@ -248,8 +248,8 @@ passport.serializeUser(function (user, cb) {
     cb(null, user);
 });
 
-passport.deserializeUser(function (obj, cb) {
-    cb(null, obj);
+passport.deserializeUser(function (user, cb) {
+    cb(null, user);
 });
 
 passport.use(
@@ -266,10 +266,16 @@ passport.use(
                 .then(function (result) {
                     if (result.rowCount == 1) {
                         console.log("utente già inserito nel db");
-                        return done(null, profile);
+                        return done(null, [
+                            accessToken,
+                            refreshToken,
+                            profile.displayName
+                                .toLowerCase()
+                                .replaceAll(" ", "."),
+                        ]);
                     } else {
                         var query = `INSERT INTO users 
-                          (nome, cognome, username, email, password, logged_with, access_token, refresh_token, punteggio) VALUES 
+                          (nome, cognome, username, email, password, logged_with, punteggio) VALUES 
                           ('${profile._json.given_name}', '${
                             profile._json.family_name
                         }',
@@ -277,13 +283,17 @@ passport.use(
                                 .toLowerCase()
                                 .replaceAll(" ", ".")}', '${
                             profile._json.email
-                        }', '', 'google',
-                        '${accessToken}', '${refreshToken}',
-                        0)`;
+                        }', '', 'google', 0)`;
                         db.query(query)
                             .then(function (result) {
                                 console.log(result);
-                                return done(null, profile);
+                                return done(null, [
+                                    accessToken,
+                                    refreshToken,
+                                    profile.displayName
+                                        .toLowerCase()
+                                        .replaceAll(" ", "."),
+                                ]);
                             })
                             .catch(function (err) {
                                 console.log(err.stack);
@@ -353,7 +363,11 @@ passport.use(
                 }
             );
             */
-            return done(null, profile);
+            return done(null, [
+                accessToken,
+                refreshToken,
+                profile.displayName.toLowerCase().replaceAll(" ", "."),
+            ]);
         }
     )
 );
@@ -361,7 +375,7 @@ passport.use(
 router.get(
     "/auth/google",
     passport.authenticate("google", {
-        scope: ["profile", "email", "https://www.googleapis.com/auth/calendar"],
+        scope: ["profile", "email"],
         accessType: "offline",
         prompt: "consent",
     })
@@ -371,10 +385,9 @@ router.get(
     "/auth/google/callback",
     passport.authenticate("google", { failureRedirect: "/user/error" }),
     function (req, res) {
-        res.cookie(
-            "username",
-            req.user.displayName.toLowerCase().replaceAll(" ", ".")
-        );
+
+        res.cookie("username", req.user[2]);
+        res.cookie("refreshToken", req.user[1]);
 
         res.redirect("/user/success");
     }
