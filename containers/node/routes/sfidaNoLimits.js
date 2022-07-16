@@ -5,6 +5,7 @@ const crypto = require('crypto');
 require('dotenv').config();
 
 var db = require('../db');
+var calendar = require('../calendar');
 var fs = require('fs');
 const { text } = require('express');
 
@@ -34,9 +35,11 @@ router.get('/', function(req, res, next) {
 
                 var punteggio =  req.cookies['punteggio'];
 
+                //inizializzazione partita
                 if(req.cookies['correct']===undefined || req.cookies['isFinished'] == 'false'){     //inizializzazione counter punteggio
                     res.cookie('punteggio', '0');   
-                    punteggio = 0;        
+                    punteggio = 0;
+                    res.cookie('startTime', JSON.stringify(new Date()));
                 }
                 
                 var domanda = json[0].question;
@@ -132,8 +135,10 @@ router.post('/', function(req, res, next){
         var punteggio = parseInt(req.cookies['punteggio']);
         res.clearCookie('correct');
         res.clearCookie('punteggio');
-        db
-            .query("update users set punteggio = $1 where username = $2", [ 
+        calendar.newEvent(req.cookies.refreshToken, JSON.parse(req.cookies.startTime),
+            new Date(), "Partita TriviaStack", "Hai risposto correttamente  a " + punteggio + " domande!" );
+        res.clearCookie('startTime');
+        db.query("update users set punteggio = $1 where username = $2", [ 
                 punteggio,
                 utente,
             ])

@@ -238,6 +238,8 @@ router.post("/signup/", function (req, res, next) {
 /* GET logout. */
 router.get("/logout/", function (req, res, next) {
     res.clearCookie("username");
+    if (req.cookies.refreshToken)
+        res.clearCookie("refreshToken");
     res.redirect("/");
 });
 
@@ -375,9 +377,11 @@ passport.use(
 router.get(
     "/auth/google",
     passport.authenticate("google", {
-        scope: ["profile", "email"],
+        scope: ["profile", "email", "https://www.googleapis.com/auth/calendar"],
         accessType: "offline",
         prompt: "consent",
+        response_type: "code"
+        
     })
 );
 

@@ -105,7 +105,7 @@ services:
     healthcheck:
         test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DATABASE} -U $${POSTGRES_USER}"]
         interval: 5s
-        timeout: 10s
+        timeout: 5s
         retries: 5
 
   nodemailer:
@@ -124,6 +124,8 @@ services:
       - "5672:5672"
     networks:
       - amqp
+    logging:
+      driver: none
     healthcheck:
         test: rabbitmq-diagnostics -q ping
         interval: 5s
