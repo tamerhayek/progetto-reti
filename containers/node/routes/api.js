@@ -22,7 +22,7 @@ router.get("/classifica/:count", function (req, res, next) {
     var count = req.params.count;
     db.query("select id as posizione, nome, cognome, username, punteggio from users where punteggio > 0 order by punteggio desc limit $1", [count,])
         .then(function (result) {
-            if( count < result.rowCount){
+            if( count <= result.rowCount){
                 var classifica = result.rows;
                 for(var i = 0; i < result.rowCount; i++)
                     classifica[i].posizione = i+1;
@@ -40,7 +40,7 @@ router.get("/classifica/:count", function (req, res, next) {
 });
 
 router.get("/statisticheCategorie", function (req, res, next) {
-    db.query("select id as posizione, nome, rating from statistichecategorie order by rating")
+    db.query("select id as posizione, nome, rating from statistichecategorie order by rating desc")
         .then(function (result) {
             for(var i = 0; i < result.rowCount; i++)
                 result.rows[i].posizione = i+1;
