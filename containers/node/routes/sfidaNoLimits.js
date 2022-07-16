@@ -33,6 +33,8 @@ var optionsVOICE = {
 
 // GET
 router.get("/", function (req, res, next) {
+    if(req.cookies["username"] == undefined)
+        res.redirect("user/login");
     const url =
         "https://the-trivia-api.com/api/questions?categories=" +
         req.query["cat"].split(" ").join("_").replaceAll("_e_", "_&_") +
