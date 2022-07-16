@@ -170,6 +170,54 @@ router.post("/signup/", function (req, res, next) {
                 db.query(query)
                     .then(function (result) {
                         console.log(result);
+                        // invia email registrazione
+                        amqplib.connect("amqp://guest:guest@rabbitmq", (err, connection) => {
+                            if (err) {
+                                console.error(err.stack);
+                            }
+                            connection.createChannel((err, channel) => {
+                                if (err) {
+                                    console.error(err.stack);
+                                }
+                                var queue = "queue";
+                                channel.assertQueue(
+                                    queue,
+                                    {
+                                        durable: true,
+                                    },
+                                    (err) => {
+                                        if (err) {
+                                            console.error(err.stack);
+                                        }
+                                        let sender = (content) => {
+                                            let sent = channel.sendToQueue(
+                                                queue,
+                                                Buffer.from(JSON.stringify(content)),
+                                                {
+                                                    persistent: true,
+                                                    contentType: "application/json",
+                                                }
+                                            );
+                                        };
+
+                                        let sent = 0;
+                                        let sendNext = () => {
+                                            if (sent >= 1) {
+                                                console.log("All messages sent!");
+                                                return channel.close(() => connection.close());
+                                            }
+                                            sent++;
+                                            sender({
+                                                email: email,
+                                                username: username,
+                                            });
+                                            return channel.close(() => connection.close());
+                                        };
+                                        sendNext();
+                                    }
+                                );
+                            });
+                        });
                         res.render("signupSuccess", {
                             title: "Trivia Stack | Registrazione Effettuata",
                             nome: nome,
@@ -186,53 +234,7 @@ router.post("/signup/", function (req, res, next) {
             console.log(err.stack);
             res.send("DB Error: " + err.stack);
         });
-    /*amqplib.connect("amqp://guest:guest@rabbitmq", (err, connection) => {
-        if (err) {
-            console.error(err.stack);
-        }
-        connection.createChannel((err, channel) => {
-            if (err) {
-                console.error(err.stack);
-            }
-            var queue = "queue";
-            channel.assertQueue(
-                queue,
-                {
-                    durable: true,
-                },
-                (err) => {
-                    if (err) {
-                        console.error(err.stack);
-                    }
-                    let sender = (content) => {
-                        let sent = channel.sendToQueue(
-                            queue,
-                            Buffer.from(JSON.stringify(content)),
-                            {
-                                persistent: true,
-                                contentType: "application/json",
-                            }
-                        );
-                    };
-
-                    let sent = 0;
-                    let sendNext = () => {
-                        if (sent >= 1) {
-                            console.log("All messages sent!");
-                            return channel.close(() => connection.close());
-                        }
-                        sent++;
-                        sender({
-                            email: email,
-                            username: username,
-                        });
-                        return channel.close(() => connection.close());
-                    };
-                    sendNext();
-                }
-            );
-        });
-    });*/
+    
 });
 
 /* GET logout. */
@@ -305,66 +307,65 @@ passport.use(
                 })
                 .catch(function (err) {
                     console.log(err.stack);
-                    return done(null);
-                });
-            /*
-            amqplib.connect(
-                "amqp://guest:guest@rabbitmq",
-                (err, connection) => {
-                    if (err) {
-                        console.error(err.stack);
-                    }
-                    connection.createChannel((err, channel) => {
-                        if (err) {
-                            console.error(err.stack);
-                        }
-                        var queue = "queue";
-                        channel.assertQueue(
-                            queue,
-                            {
-                                durable: true,
-                            },
-                            (err) => {
+                    //invia email
+                    amqplib.connect(
+                        "amqp://guest:guest@rabbitmq",
+                        (err, connection) => {
+                            if (err) {
+                                console.error(err.stack);
+                            }
+                            connection.createChannel((err, channel) => {
                                 if (err) {
                                     console.error(err.stack);
                                 }
-                                let sender = (content) => {
-                                    let sent = channel.sendToQueue(
-                                        queue,
-                                        Buffer.from(JSON.stringify(content)),
-                                        {
-                                            persistent: true,
-                                            contentType: "application/json",
+                                var queue = "queue";
+                                channel.assertQueue(
+                                    queue,
+                                    {
+                                        durable: true,
+                                    },
+                                    (err) => {
+                                        if (err) {
+                                            console.error(err.stack);
                                         }
-                                    );
-                                };
-
-                                let sent = 0;
-                                let sendNext = () => {
-                                    if (sent >= 1) {
-                                        console.log("All messages sent!");
-                                        return channel.close(() =>
-                                            connection.close()
-                                        );
+                                        let sender = (content) => {
+                                            let sent = channel.sendToQueue(
+                                                queue,
+                                                Buffer.from(JSON.stringify(content)),
+                                                {
+                                                    persistent: true,
+                                                    contentType: "application/json",
+                                                }
+                                            );
+                                        };
+        
+                                        let sent = 0;
+                                        let sendNext = () => {
+                                            if (sent >= 1) {
+                                                console.log("All messages sent!");
+                                                return channel.close(() =>
+                                                    connection.close()
+                                                );
+                                            }
+                                            sent++;
+                                            sender({
+                                                email: profile._json.email,
+                                                username: profile.displayName
+                                                    .toLowerCase()
+                                                    .replaceAll(" ", "."),
+                                            });
+                                            return channel.close(() =>
+                                                connection.close()
+                                            );
+                                        };
+                                        sendNext();
                                     }
-                                    sent++;
-                                    sender({
-                                        email: profile._json.email,
-                                        username: profile.displayName
-                                            .toLowerCase()
-                                            .replaceAll(" ", "."),
-                                    });
-                                    return channel.close(() =>
-                                        connection.close()
-                                    );
-                                };
-                                sendNext();
-                            }
-                        );
-                    });
-                }
-            );
-            */
+                                );
+                            });
+                        }
+                    );
+                    return done(null);
+                });
             return done(null, [
                 accessToken,
                 refreshToken,
