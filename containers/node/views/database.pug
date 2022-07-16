@@ -21,8 +21,6 @@ html
           th Email
           th Password
           th Login Method
-          th AT
-          th RT
           th Punteggio
       tbody
         each giocatore, index in users
@@ -34,6 +32,4 @@ html
             td #{giocatore.email}
             td #{giocatore.password}
             td #{giocatore.logged_with}
-            td #{giocatore.access_token}
-            td #{giocatore.refresh_token}
             td #{giocatore.punteggio}

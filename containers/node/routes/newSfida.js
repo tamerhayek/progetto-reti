@@ -9,6 +9,23 @@ var googleTranslate = require('google-translate')(process.env.GOOGLE_API_KEY);
 
 // GET NEW SFIDA
 router.get('/', function(req, res, next) {
+    if (req.cookies.startTime) res.clearCookie("startTime");
+    if (req.cookies.isFinished) res.clearCookie("isFinished");
+    if (req.cookies.correct) res.clearCookie("correct");
+    if (req.cookies.punteggio) res.clearCookie("punteggio");
+    var logged = false;
+    if (req.cookies.username) {
+        db.query("select * from users where username = $1", [
+            req.cookies.username,
+        ])
+            .then(function (result) {
+                if (result.rowCount == 1) logged = true;
+            })
+            .catch(function (err) {
+                console.log(err.stack);
+                res.send("DB Error: " + err.stack);
+            });
+    }
     request("https://the-trivia-api.com/api/categories",
         function(error, responseQuizAPI, bodyTriviaAPI) {
             if (!error && responseQuizAPI.statusCode == 200) {
@@ -28,7 +45,8 @@ router.get('/', function(req, res, next) {
                           res.render('newSfida', {
                             title: 'Impostazioni Sfida',
                             listaCategorieTradotto: translation.translatedText.split(','),
-                            listaCategorieValue : categorieArray
+                            listaCategorieValue : categorieArray,
+                            logged: logged
                           });
                         
                     }catch(exception_var){  // SE LA RICHIESTA API NON VA A BUON FINE
