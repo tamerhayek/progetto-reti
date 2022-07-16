@@ -35,4 +35,20 @@ router.get("/", function (req, res, next) {
 
 });
 
+router.get("/api/classifica", function (req, res, next) {
+    db.query("select id as posizione, nome, cognome, username, punteggio from users where punteggio > 0 order by punteggio desc")
+        .then(function (result) {
+            var classifica = result.rows;
+            for(var i = 0; i < result.rowCount; i++)
+                classifica[i].posizione = i+1;
+            
+            console.log(classifica);
+            res.send(classifica);
+        })
+        .catch(function (err) {
+            console.log(err.stack);
+            res.send("DB Error: "+ err.stack);
+        })
+});
+
 module.exports = router;

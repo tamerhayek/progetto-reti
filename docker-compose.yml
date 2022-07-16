@@ -104,9 +104,9 @@ services:
       - ./containers/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
         test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DATABASE} -U $${POSTGRES_USER}"]
-        interval: 5s
-        timeout: 5s
-        retries: 5
+        interval: 10s
+        timeout: 10s
+        retries: 10
 
   nodemailer:
     build: "./containers/nodemailer"
@@ -116,6 +116,8 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
+    restart: always
+
   
   rabbitmq:
     build: "./containers/rabbitmq"
@@ -124,13 +126,12 @@ services:
       - "5672:5672"
     networks:
       - amqp
-    logging:
-      driver: none
+    
     healthcheck:
         test: rabbitmq-diagnostics -q ping
-        interval: 5s
-        timeout: 5s
-        retries: 5
+        interval: 10s
+        timeout: 10s
+        retries: 10
 
 networks:
   app:
