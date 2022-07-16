@@ -1,3 +1,4 @@
+const e = require('express');
 var express = require('express');
 var router = express.Router();
 var request = require('request');
@@ -68,13 +69,32 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res, next){
     const diff = req.body.difficolta;       // difficoltà selezionata
     const cat = req.body.cat;               // categorie scelte
-    const mod = req.body.tempo;             // modalità di gioco
-    console.log( "\n" + cat.toString().split(' ').join('+').replaceAll('&', 'e') );
-    if(mod == 'limitato'){
-        res.redirect('/sfidaTimer');
-    }else if(mod == 'illimitato'){
-        res.redirect('/sfidaNoLimits?diff=' + diff + '&cat=' + cat.toString().split(' ').join('+').replaceAll('&', 'e'));
+    var categorie = cat.toString().split(',');
+    for(let i=0; i < categorie.length; i++){
+        var query = 'SELECT * from statistichecategorie where nome = \'' + categorie[i] + '\' limit 1';
+        db.query(query)
+            .then(function (result) {
+                var q;
+                if(result.rowCount == 1){   //esiste --> aggiorna tupla
+                    q = 'UPDATE statistichecategorie SET rating = \'' + (result.rows[0].rating+1) + '\' WHERE id = \'' + result.rows[0].id + '\'';
+                }else{  //non esiste --> aggiungi tupla
+                    q = 'insert into statistichecategorie (nome, rating) values (\''+ categorie[i] + '\', \'0\')'; 
+                }
+                db.query(q)
+                    .then(function (rst) {
+                        console.log("aggiornato correttamente statistichecategorie");
+                    })
+                    .catch(function (err) {
+                        console.log(err.stack);
+                        res.send("DB Error: " + err.stack);
+                });
+            })
+            .catch(function (err) {
+                console.log(err.stack);
+                res.send("DB Error: " + err.stack);
+            }); 
     }
+    res.redirect('/sfidaNoLimits?diff=' + diff + '&cat=' + cat.toString().split(' ').join('+').replaceAll('&', 'e'));
 });
 
 module.exports = router;
