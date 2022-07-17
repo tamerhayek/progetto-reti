@@ -26,4 +26,4 @@ jobs:
       - name: start docker
         run: docker-compose up -d
       - name: test connection
-        run: docker run --rm appropriate/curl http://localhost/
+        run: curl http://localhost/

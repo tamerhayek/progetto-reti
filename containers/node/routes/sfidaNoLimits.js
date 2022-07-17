@@ -184,8 +184,11 @@ router.post("/", function (req, res, next) {
         res.clearCookie("correct");
         res.clearCookie("punteggio");
         var msg = "";
-        db.query("select from users where username = $1", [utente])
+        db.query(`select * from users where username = '${utente}'`)
             .then(function (result) {
+                console.log("\n\n\n"+result+"\n\n\n");
+                console.log("\n\n\n"+JSON.stringify(result)+"\n\n\n");
+                console.log("\n\n\n"+result.rows[0].logged_with+"\n\n\n");
                 if (
                     result.rowCount == 1 &&
                     result.rows[0].logged_with == "google"
