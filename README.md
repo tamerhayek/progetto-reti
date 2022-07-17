@@ -1,4 +1,4 @@
-# TriviaStack 
+# Trivia Stack 
 
 Progetto Reti di Calcolatori
 
@@ -6,38 +6,102 @@ Progetto Reti di Calcolatori
 - Maria Diana Calugaru
 - Samuele Cervo
 
-# Requisiti
+Il nostro progetto implementa un quiz a tempo illimitato. Per poter giocare basta registrarsi oppure effettuare il login con Google. Una volta effettuato il login, l'utente può scegliere una o più categorie per le domande della partita e cominciare a giocare nel tentativo di raggiungere un nuovo record e salire nella classifica generale del gioco. Durante il gioco viene data la possibilità di riprodurre le domanda come audio in inglese o italiano. Inoltre, se il giocatore ha effettuato il login con Google, alla fine di ogni partita sarà aggiunto al suo calendario un evento che riporta informazioni relative a quella partita e il punteggio conseguito.
 
-- Il servizio REST che implementate (lo chiameremo SERV) deve offrire a terze parti delle API documentate
+## Soddisfacimento dei requisiti e tecnologie usate
 
-- SERV si deve interfacciare con almeno due servizi REST di terze parti (e.g. google maps)
+- Il servizio REST che implementiamo (SERV) deve offrire a terze parti delle API documentate:
+    API documentate tramite APIDOC accessibili dal seguente file:
+   ```
+   /apidoc/doc/index.html
+   ```
+   Servizi offerti:
+   - classifica del gioco (si può scegliere di quanti utenti si desidera la classifica)
+   - statistiche sulle categorie di domande più scelte dai giocatori
 
-- Almeno uno dei servizi REST esterni deve essere “commerciale” (es: twitter, google, facebook, pubnub, parse, firebase etc)
 
-- Almeno uno dei servizi REST esterni deve richiedere oauth (e.g. google calendar), Non è sufficiente usare oauth solo per verificare le credenziali è necessario accedere al servizio
+- SERV si deve interfacciare con almeno due servizi REST di terze parti:
+    - Google Calendar: per creare/aggiungere eventi al proprio calendario
+    - Google Translate: per tradurre le domande dall'inglese a italiano
+    - The Trivia Api: per estrarre casualmente domande
+    - Voice-RSS Text-To-Speech: per poter riprodurre le domande
 
-- La soluzione deve prevedere l'uso di protocolli asincroni. Per esempio Websocket e/o AMQP (o simili es MQTT)
+- Almeno uno dei servizi REST esterni deve essere “commerciale”
+    - Google (Calendar & Translate)
+
+- Almeno uno dei servizi REST esterni deve richiedere oauth:
+    - Google Calendar: tramite accesso Oauth
+
+- La soluzione deve prevedere l'uso di protocolli asincroni:
+    - AMQP usato per l'invio di una e-mail di conferma registrazione alla nostra applicazione
 
 - Il progetto deve prevedere l'uso di Docker e l'automazione del processo di lancio, configurazione e test
+    - applicazione gestita su più container di Docker
 
-- Il progetto deve essere su GIT (GITHUB, GITLAB ...) e documentato don un README che illustri almeno lo scopo del progetto, architettura di riferimento e tecnologie usate (con un diagramma) e chiare indicazioni sul soddisfacimento dei requisiti, istruzioni per l'installazione, istruzioni per il test, Documentazione delle API fornite per esempio con APIDOC
+- Il progetto deve essere su GIT  
+    - GitHub utilizzato per favorire lo sviluppo e il coordinamento
+- Deve essere implementata una forma di CI/CD:
+    - Procedura di CI/CD attraverso Github Actions
+- Requisiti minimi di sicurezza devono essere considerati e documentati.    
+    - Certificati self-signed
+#### Altre tecnologie usate
+- Nginx: web server usato anche come proxy server e load balancer
+- Postgres: utilizzato per il Data storage degli utenti e delle categorie di domande
+- Node.js: utilizzato il back-end
+- Pug: utilizzato come template per le pagine
+- Css: utilizzato per i fogli di stile
+- Express.js: utilizzato come framework 
 
-- Deve essere implementata una forma di CI/CD per esempio con le Github Actions
+## Guida all'uso
+- clonare la repository del nostro progetto e spostarsi all'interno della directory progetto-reti:
+```
+git clone https://github.com/tamerhayek00/progetto-reti
+cd progetto-reti
+```
+- creare un file .env 
+```
+COUCHDB_USR="admin"
+COUCHDB_PSW="admin"
 
-- Requisiti minimi di sicurezza devono essere considerati e documentati. Self-signed certificate sono più che sufficienti per gli scopi del progetto.
+POSTGRES_USER="postgres"
+POSTGRES_PASSWORD="postgres"
+POSTGRES_DATABASE="postgres"
 
-# Tecnologie
+GOOGLE_API_KEY="AIzaSyDc-o6CturcUVjlKBUXk5n8npizRrnQzR4"
 
-NodeJS
-HTML, CSS, Javascript
-DB (?) CouchDB, MongoDB
-Mocha (test)
+GOOGLE_CLIENT_ID="400602995888-1mahacb0tva92ebq47gpstup807k1p4n.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET="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"
 
-- API:
+VOICE_RSS_KEY="b71e9afdbb5b479fa192c92dd8fd9e9f"
+SESSION_SECRET_KEY="mysupersecretkey"
 
+```
+- avviare il progetto tramite il comando:
+```
+docker-compose up
+```
+Una volta messa sù l'applicazione vengono creati 7 container all'interno di DOCKER:
+- Nginx
+- Node (3 istanze per il load balancing)
+- Postgres
+- Nodemailer
+- RabbitMq
 
+Per accedere al servizio da un browser andare su:
+```
+http://localhost:80
+```
+oppure su:
+```
+https://localhost:443
+```
 
-# IDEA
+## Test
+I test sono stati eseguiti tramite il modulo Mocha.
+Si eseguono lanciando nella directory del progetto il comando:
+```
+npm test
+```
 
 
 

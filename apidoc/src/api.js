@@ -1,11 +1,9 @@
-/**
- * @api {get} /api/classifica/:count Richiesta classifica degli utenti (con possibilità di ottenere i primi count utenti)
- * @apiName Classifica
+/**@api {get} /api/classifica Richiesta classifica completa degli utenti 
+ * @apiName Classifica Completa
  * @apiGroup Classifica
  *
- * @apiParam count Numero di utenti a cui si limita la classifica
  * @apiParamExample {text} Esempio-Richiesta:
- *      https://localhost/api/classifica/5
+ *      https://localhost/api/classifica
  * @apiSuccess {Number} posizione Posizione in classifica
  * @apiSuccess {String} nome Nome dell'utente
  * @apiSuccess {String} cognome Cognome dell'utente
@@ -36,6 +34,49 @@
  *          "cognome":"Cervo",
  *          "username":"samuele.cervo",
  *          "punteggio":9
+ *        }
+ *     ]
+ *
+ * @apiError DB_error Errore nel database
+ *
+ * @apiErrorExample Error-Response:
+ *   {  
+ *      DB Error: error stack generato dal database
+ *   }
+ * 
+ * 
+ */
+/** 
+ * @api {get} /api/classifica/:count Richiesta classifica degli utenti (con possibilità di ottenere i primi count utenti)
+ * @apiName Classifica
+ * @apiGroup Classifica
+ *
+ * @apiParam count Numero di utenti a cui si limita la classifica
+ * @apiParamExample {text} Esempio-Richiesta:
+ *      https://localhost/api/classifica/2
+ * @apiSuccess {Number} posizione Posizione in classifica
+ * @apiSuccess {String} nome Nome dell'utente
+ * @apiSuccess {String} cognome Cognome dell'utente
+ * @apiSuccess {String} username Username dell'utente 
+ * @apiSuccess {Number} punteggio Punteggio record dell'utente
+ * 
+ * 
+ *
+ * @apiSuccessExample Success-Response:
+ *     [
+ *        {
+ *          "posizione":1,
+ *          "nome":"Diana",
+ *          "cognome":"Calugaru",
+ *          "username":"diana.calugaru",
+ *          "punteggio":14
+ *        },
+ *        {
+ *          "posizione":2,
+ *          "nome":"Tamer",
+ *          "cognome":"Hayek",
+ *          "username":"tamer.hayek",
+ *          "punteggio":10
  *        }
  *     ]
  *
