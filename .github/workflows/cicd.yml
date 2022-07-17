@@ -16,4 +16,4 @@ jobs:
         uses: actions/checkout@v3
       - uses: actions/setup-node@v3
       - name: start docker
-        run: ./docker-scripts/linux/start_docker.sh
+        run: docker-compose --env-file ../../.env up
