@@ -126,7 +126,8 @@ services:
       - "5672:5672"
     networks:
       - amqp
-    
+    logging:
+      driver: none
     healthcheck:
         test: rabbitmq-diagnostics -q ping
         interval: 10s

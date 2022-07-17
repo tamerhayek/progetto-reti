@@ -1,1 +1,1 @@
-docker-compose down --rmi "all" -v
+docker-compose --env-file ../../.env down --rmi "all" -v
