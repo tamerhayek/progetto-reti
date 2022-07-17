@@ -6,8 +6,6 @@ require("dotenv").config();
 
 var db = require("../db");
 var calendar = require("../calendar");
-var fs = require("fs");
-const { text } = require("express");
 
 var googleTranslate = require("google-translate")(process.env.GOOGLE_API_KEY);
 
@@ -33,8 +31,7 @@ var optionsVOICE = {
 
 // GET
 router.get("/", function (req, res, next) {
-    if(req.cookies["username"] == undefined)
-        res.redirect("user/login");
+    if (req.cookies["username"] == undefined) res.redirect("user/login");
     const url =
         "https://the-trivia-api.com/api/questions?categories=" +
         req.query["cat"].split(" ").join("_").replaceAll("_e_", "_&_") +
@@ -186,15 +183,32 @@ router.post("/", function (req, res, next) {
         var punteggio = parseInt(req.cookies["punteggio"]);
         res.clearCookie("correct");
         res.clearCookie("punteggio");
-        const startTime = JSON.parse(req.cookies.startTime);
-        const endTime = new Date();
-        calendar.newEvent(
-            req.cookies.refreshToken,
-            startTime,
-            endTime,
-            "Partita TriviaStack",
-            "Hai risposto correttamente  a " + punteggio + " domande!"
-        );
+        var msg = "";
+        db.query("select from users where username = $1", [utente])
+            .then(function (result) {
+                if (
+                    result.rowCount == 1 &&
+                    result.rows[0].logged_with == "google"
+                ) {
+                    const startTime = JSON.parse(req.cookies.startTime);
+                    const endTime = new Date();
+                    calendar.newEvent(
+                        req.cookies.refreshToken,
+                        startTime,
+                        endTime,
+                        "Partita TriviaStack",
+                        "Hai risposto correttamente  a " +
+                            punteggio +
+                            " domande!"
+                    );
+                } else {
+                    msg = "Per tenere traccia delle tue partite crea un account con google!"
+                }
+            })
+            .catch(function (err) {
+                console.log(err.stack);
+                res.send("DB Error: " + err.stack);
+            });
         res.clearCookie("startTime");
         db.query("update users set punteggio = $1 where username = $2", [
             punteggio,
@@ -206,6 +220,8 @@ router.post("/", function (req, res, next) {
                     title: "Trivia Stack | Risultati",
                     punteggio: punteggio,
                     utente: utente,
+                    msg: msg,
+                    logged: true
                 });
             })
             .catch(function (err) {

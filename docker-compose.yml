@@ -96,7 +96,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DATABASE=${POSTGRES_DATABASE}
     ports:
-      - '5432:5432'
+      - "5432:5432"
     networks:
       - db
     volumes: 

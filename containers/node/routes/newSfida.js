@@ -1,4 +1,3 @@
-const e = require('express');
 var express = require('express');
 var router = express.Router();
 var request = require('request');
@@ -82,7 +81,7 @@ router.post('/', function(req, res, next){
                 if(result.rowCount == 1){   //esiste --> aggiorna tupla
                     q = 'UPDATE statistichecategorie SET rating = \'' + (result.rows[0].rating+1) + '\' WHERE id = \'' + result.rows[0].id + '\'';
                 }else{  //non esiste --> aggiungi tupla
-                    q = 'insert into statistichecategorie (nome, rating) values (\''+ categorie[i] + '\', \'0\')'; 
+                    q = 'insert into statistichecategorie (nome, rating) values (\''+ categorie[i] + '\', \'1\')'; 
                 }
                 db.query(q)
                     .then(function (rst) {

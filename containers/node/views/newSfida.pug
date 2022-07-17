@@ -18,8 +18,8 @@ block content
 
     - var i = 0
     each key in listaCategorieTradotto
-        input#cat(type='checkbox' name='cat' value=listaCategorieValue[i])
-        label(for='cat') #{key}
+        input(id=listaCategorieValue[i] type='checkbox' name='cat' value=listaCategorieValue[i])
+        label(for=listaCategorieValue[i]) #{key}
         - i++
         br
 

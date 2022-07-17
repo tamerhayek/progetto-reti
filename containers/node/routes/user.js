@@ -4,7 +4,7 @@ const amqplib = require("amqplib/callback_api");
 const crypto = require("crypto");
 require("dotenv").config();
 
-const admins = ["tamerhayek", "dianacalugaru", "samuelecervo"];
+const admins = ["tamerhayek", "dianacalugaru", "samuelecervo", "tamer.hayek", "samuele.cervo"];
 
 var db = require("../db");
 
@@ -67,15 +67,11 @@ router.get("/", function (req, res, next) {
 });
 
 /* ALL */
-router.get("/all", function (req, res, next) {
+router.get("/api", function (req, res, next) {
     if (req.cookies.username && admins.includes(req.cookies.username)) {
         db.query("select * from users")
             .then(function (result) {
-                res.render("database", {
-                    title: "Trivia Stack | ALL",
-                    users: result.rows,
-                    logged: true,
-                });
+                res.send(result.rows);
             })
             .catch(function (err) {
                 console.log(err.stack);

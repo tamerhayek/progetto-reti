@@ -15,3 +15,23 @@
 .audioIcon:hover{
     cursor: pointer;
 }
+
+.betterResponse{
+    border: 2px solid black;
+    padding:5px;
+    width: 20%;
+    text-align:center;
+    
+}
+.betterResponse label:hover{
+    cursor: pointer;
+}
+.betterResponse input{
+     visibility:hidden;
+    position: absolute;
+    
+}
+input:checked + label{
+    font-weight: bold;
+    background-color: yellow;
+}

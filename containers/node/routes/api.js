@@ -20,20 +20,15 @@ router.get("/classifica", function (req, res, next) {
 
 router.get("/classifica/:count", function (req, res, next) {
     var count = req.params.count;
-    db.query("select id as posizione, nome, cognome, username, punteggio from users where punteggio > 0 order by punteggio desc limit $1", [count,])
+    db.query("select id as posizione, nome, cognome, username, punteggio from users where punteggio > 0 order by punteggio desc limit $1", [count])
         .then(function (result) {
-            if( count <= result.rowCount){
-                var classifica = result.rows;
+            var classifica = result.rows;
                 for(var i = 0; i < result.rowCount; i++)
                     classifica[i].posizione = i+1;
                 
                 console.log(classifica);
                 res.send(classifica);
-            }
-            else 
-                res.send("Il numero di utenti richiesto è maggiore degli utenti attualmente registrati.")
-        })
-        .catch(function (err) {
+        }).catch(function (err) {
             console.log(err.stack);
             res.send("DB Error: "+ err.stack);
         })

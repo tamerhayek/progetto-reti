@@ -28,8 +28,9 @@ html
 
       div
         each key in risposte
-          input#risposta(type='radio' name='risposta' value=key required)
-          label(for=key) #{key}
+          .betterResponse
+            input(id=key type='radio' name='risposta' value=key required)
+            label(for=key) #{key}
           br
         
       br    
