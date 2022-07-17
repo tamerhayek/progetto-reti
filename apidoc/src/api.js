@@ -46,13 +46,6 @@
  *      DB Error: error stack generato dal database
  *   }
  * 
- * @apiError Param_error Parametro in input troppo grande
- *
- * @apiErrorExample Error-Response:
- *   {
- *     Il numero di utenti richiesto è maggiore degli utenti attualmente registrati!
- *   }
- * 
  * 
  */
 /**
