@@ -26,4 +26,4 @@ jobs:
       - name: start docker
         run: docker-compose up -d
       - name: test connection
-        run: docker run --network container:node appropriate/curl -s --retry 10 --retry-connrefused http://localhost:3000/
+        run: docker run --network container:node1 appropriate/curl -s --retry 10 --retry-connrefused http://localhost:3000/
