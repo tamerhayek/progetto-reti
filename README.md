@@ -58,24 +58,6 @@ Il nostro progetto implementa un quiz a tempo illimitato. Per poter giocare bast
 git clone https://github.com/tamerhayek00/progetto-reti
 cd progetto-reti
 ```
-- creare un file .env 
-```
-COUCHDB_USR="admin"
-COUCHDB_PSW="admin"
-
-POSTGRES_USER="postgres"
-POSTGRES_PASSWORD="postgres"
-POSTGRES_DATABASE="postgres"
-
-GOOGLE_API_KEY="AIzaSyDc-o6CturcUVjlKBUXk5n8npizRrnQzR4"
-
-GOOGLE_CLIENT_ID="400602995888-1mahacb0tva92ebq47gpstup807k1p4n.apps.googleusercontent.com"
-GOOGLE_CLIENT_SECRET="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"
-
-VOICE_RSS_KEY="b71e9afdbb5b479fa192c92dd8fd9e9f"
-SESSION_SECRET_KEY="mysupersecretkey"
-
-```
 - avviare il progetto tramite il comando:
 ```
 docker-compose up
