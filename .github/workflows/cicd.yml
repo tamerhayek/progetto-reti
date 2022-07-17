@@ -27,3 +27,7 @@ jobs:
       - uses: actions/setup-node@v3
       - name: start docker
         run: docker-compose up -d
+      - name: run npm test installation
+        run: npm i
+      - name: run npm test
+        run: npm test
