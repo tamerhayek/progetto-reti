@@ -28,6 +28,6 @@ jobs:
       - name: test docker
         run: docker ps -a
       - name: test connection nginx
-        run: docker run --network container:nginx -s appropriate/curl http://localhost/
+        run: docker run --network container:nginx appropriate/curl http://localhost/
       - name: test connection node1
-        run: docker run --network container:node1 -s appropriate/curl http://localhost:3000/
+        run: docker run --network container:node1 appropriate/curl http://localhost:3000/
