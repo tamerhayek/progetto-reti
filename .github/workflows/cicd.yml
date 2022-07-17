@@ -15,7 +15,5 @@ jobs:
       - name: Checkup & Setup Node
         uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-      - name: npm installation
-        run: npm install
-      - name: run test
-        run: npm test
+      - name: start docker
+        run: ./docker-scripts/linux/start_docker.sh
