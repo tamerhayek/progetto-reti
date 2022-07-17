@@ -1,4 +1,4 @@
-name: ci/cd
+name: docker-compose-ci/cd
 on:
   push:
     branches: [main]
@@ -25,5 +25,7 @@ jobs:
       - name: Checkup & Setup Node
         uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-      - name: start docker with test
-        run: docker-compose up -d && npm i && npm test
+      - name: start docker
+        run: docker-compose up -d
+      - name: test connection
+        run: docker run --network container:webapp-frontend appropriate/curl -s --retry 10 --retry-connrefused http://localhost/
