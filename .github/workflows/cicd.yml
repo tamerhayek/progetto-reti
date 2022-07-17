@@ -25,9 +25,5 @@ jobs:
       - name: Checkup & Setup Node
         uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-      - name: start docker
-        run: docker-compose up -d
-      - name: run npm test installation
-        run: npm i
-      - name: run npm test
-        run: npm test
+      - name: start docker with test
+        run: docker-compose up -d && npm i && npm test
