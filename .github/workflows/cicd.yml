@@ -26,4 +26,4 @@ jobs:
       - name: start docker
         run: docker-compose up -d
       - name: test connection
-        run: docker run --network container:nginx appropriate/curl -s --retry 10 --retry-connrefused http://localhost:80/
+        run: docker run --rm appropriate/curl http://localhost/
