@@ -1,1 +1,0 @@
-.\remove_only_docker.bat & .\start_only_docker.bat
