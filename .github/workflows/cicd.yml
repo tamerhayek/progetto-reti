@@ -28,4 +28,4 @@ jobs:
       - name: test docker
         run: docker ps
       - name: test connection
-        run: curl http://localhost/
+        run: docker run --network container:nginx appropriate/curl http://localhost/
