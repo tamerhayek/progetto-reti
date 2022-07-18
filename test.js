@@ -6,6 +6,24 @@ const it = require("mocha").it;
 chai.use(chaiHttp);
 chai.should();
 
+describe("Test dell' applicazione", () => {
+    it("/ 200 OK", (done) => {
+        console.log("\n     / 200 OK\n");
+        chai.request("http://localhost")
+            .get("/")
+            .end((err, res) => {
+                if (err) {
+                    console.log(
+                        "\tConnection Failed! PROBABLY DOCKER IS NOT RUNNING!\n"
+                    );
+                    process.exit(1);
+                }
+                res.should.have.status(200);
+                done();
+            });
+    });
+});
+
 describe("Test delle API", () => {
     it("/api/classifica 200 OK + ARRAY senza limitazioni", (done) => {
         console.log(
@@ -14,6 +32,12 @@ describe("Test delle API", () => {
         chai.request("http://localhost/api")
             .get("/classifica")
             .end((err, res) => {
+                if (err) {
+                    console.log(
+                        "\tConnection Failed! PROBABLY DOCKER IS NOT RUNNING!\n"
+                    );
+                    process.exit(1);
+                }
                 res.should.have.status(200);
                 console.log("\tHave body");
                 res.should.have.property("body");
@@ -42,6 +66,12 @@ describe("Test delle API", () => {
         chai.request("http://localhost/api")
             .get("/classifica/0")
             .end((err, res) => {
+                if (err) {
+                    console.log(
+                        "\tConnection Failed! PROBABLY DOCKER IS NOT RUNNING!\n"
+                    );
+                    process.exit(1);
+                }
                 res.should.have.status(200);
                 console.log("\tHave body");
                 res.should.have.property("body");
@@ -57,6 +87,12 @@ describe("Test delle API", () => {
         chai.request("http://localhost/api")
             .get("/classifica/3")
             .end((err, res) => {
+                if (err) {
+                    console.log(
+                        "\tConnection Failed! PROBABLY DOCKER IS NOT RUNNING!\n"
+                    );
+                    process.exit(1);
+                }
                 res.should.have.status(200);
                 console.log("\tHave body");
                 res.should.have.property("body");
@@ -87,6 +123,12 @@ describe("Test delle API", () => {
         chai.request("http://localhost/api")
             .get("/statisticheCategorie")
             .end((err, res) => {
+                if (err) {
+                    console.log(
+                        "\tConnection Failed! PROBABLY DOCKER IS NOT RUNNING!\n"
+                    );
+                    process.exit(1);
+                }
                 res.should.have.status(200);
                 console.log("\tHave body");
                 res.should.have.property("body");

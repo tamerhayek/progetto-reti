@@ -29,3 +29,5 @@ jobs:
         run: docker ps -a
       - name: test connection nginx
         run: docker run --network container:nginx appropriate/curl http://localhost/
+      - name: npm test
+        run: npm i mocha -g && npm i && npm test
