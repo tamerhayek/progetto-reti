@@ -1,10 +1,13 @@
 extends layout
 
 block head  
-    //link(rel="stylesheet", href="/stylesheets/sfida.css")
+    link(rel="stylesheet", href="/stylesheets/sfida.css")
 
 block content
     h1 Congratulazioni #{utente}
     br
+    if record
+        h2 NUOVO RECORD!
+        br
     h2 Hai risposto correttamente a #{punteggio} domande!
     p= msg

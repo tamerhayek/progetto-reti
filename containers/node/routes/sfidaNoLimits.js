@@ -42,6 +42,8 @@ router.get("/", function (req, res, next) {
             const json = JSON.parse(bodyTriviaAPI);
 
             var punteggio = req.cookies["punteggio"];
+            
+            console.log("\n\n\nAPI: "+JSON.stringify(json)+"\n\n\n");
 
             //inizializzazione partita
             if (
@@ -66,14 +68,18 @@ router.get("/", function (req, res, next) {
             ]; //POS_1 = RISPOSTA CORRETTA
             for (var x in incorrectAnswers)
                 daTradurre.push(incorrectAnswers[x]); //POS >= 2 RISPOSTE SBAGLIATE
-
+            
+            console.log("\n\n\nDOMANDE: "+daTradurre+"\n\n\n");
             //traduzione e rendering della pagina
             googleTranslate.translate(
-                daTradurre.toString(),
+                daTradurre.toString().replaceAll(",","-"),
                 "it",
                 function (err, translation) {
                     if (!err) {
-                        var traduzione = translation.translatedText.split(",");
+                        console.log("\n\n\nTRADUZIONE ORIGINALE: "+translation.translatedText+"\n\n\n");
+
+                        var traduzione = translation.translatedText.split("-");
+                        console.log("\n\n\nTRADUZIONE: "+traduzione+"\n\n\n");
 
                         var allanswers = traduzione.slice(2);
                         allanswers.push(traduzione[1]);
@@ -186,26 +192,44 @@ router.post("/", function (req, res, next) {
         var msg = "";
         db.query(`select * from users where username = '${utente}'`)
             .then(function (result) {
-                console.log("\n\n\n"+result+"\n\n\n");
-                console.log("\n\n\n"+JSON.stringify(result)+"\n\n\n");
-                console.log("\n\n\n"+result.rows[0].logged_with+"\n\n\n");
-                if (
-                    result.rowCount == 1 &&
-                    result.rows[0].logged_with == "google"
-                ) {
-                    const startTime = JSON.parse(req.cookies.startTime);
-                    const endTime = new Date();
-                    calendar.newEvent(
-                        req.cookies.refreshToken,
-                        startTime,
-                        endTime,
-                        "Partita TriviaStack",
-                        "Hai risposto correttamente  a " +
-                            punteggio +
-                            " domande!"
-                    );
+                if (result.rowCount == 1) {
+                    var record = false;
+                    if (parseInt(result.rows[0].punteggio) < punteggio) {
+                        record = true;
+                        db.query(
+                            "update users set punteggio = $1 where username = $2",
+                            [punteggio, utente]
+                        ).catch(function (err) {
+                            console.log(err.stack);
+                            res.send("DB Error: " + err.stack);
+                        });
+                    }
+                    if (result.rows[0].logged_with == "google") {
+                        const startTime = JSON.parse(req.cookies.startTime);
+                        const endTime = new Date();
+                        calendar.newEvent(
+                            req.cookies.refreshToken,
+                            startTime,
+                            endTime,
+                            "Partita TriviaStack",
+                            "Hai risposto correttamente  a " +
+                                punteggio +
+                                " domande!"
+                        );
+                    } else {
+                        msg =
+                            "Per tenere traccia delle tue partite crea un account con google!";
+                    }
+                    res.render("risultati", {
+                        title: "Trivia Stack | Risultati",
+                        punteggio: punteggio,
+                        utente: utente,
+                        record: record,
+                        msg: msg,
+                        logged: true,
+                    });
                 } else {
-                    msg = "Per tenere traccia delle tue partite crea un account con google!"
+                    res.send("ERRORE: utente non trovato!");
                 }
             })
             .catch(function (err) {
@@ -213,24 +237,6 @@ router.post("/", function (req, res, next) {
                 res.send("DB Error: " + err.stack);
             });
         res.clearCookie("startTime");
-        db.query("update users set punteggio = $1 where username = $2", [
-            punteggio,
-            utente,
-        ])
-            .then(function (result) {
-                console.log(result);
-                res.render("risultati", {
-                    title: "Trivia Stack | Risultati",
-                    punteggio: punteggio,
-                    utente: utente,
-                    msg: msg,
-                    logged: true
-                });
-            })
-            .catch(function (err) {
-                console.log(err.stack);
-                res.send("DB Error: " + err.stack);
-            });
     }
 });
 

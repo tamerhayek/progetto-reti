@@ -1,7 +1,3 @@
-*{
-    margin: 5px;
-}
-
 .audio{
     display: none;   
 }
@@ -16,22 +12,54 @@
     cursor: pointer;
 }
 
+.sfida {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.scelta {
+    text-align: center;
+}
+
+.scelta *{
+    margin: 5px;
+}
+
 .betterResponse{
     border: 2px solid black;
-    padding:5px;
-    width: 20%;
+    padding: 10px;
+    width: 100%;
     text-align:center;
-    
 }
 .betterResponse label:hover{
     cursor: pointer;
 }
 .betterResponse input{
-     visibility:hidden;
+    visibility: hidden;
     position: absolute;
-    
 }
-input:checked + label{
+.betterResponse input:checked + label{
     font-weight: bold;
-    background-color: yellow;
+    color: red;
+}
+
+.submit {
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid black;
+}
+.submit:hover {
+    cursor: pointer;
+}
+
+h1 {
+    text-align: center;
+}
+
+
+h2 {
+    text-align: center;
 }

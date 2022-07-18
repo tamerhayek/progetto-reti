@@ -1,3 +1,4 @@
+extends layout
 
 block head  
     link(rel="stylesheet", href="/stylesheets/sfida.css")
@@ -5,7 +6,7 @@ block head
 block content
   h1= title
 
-  form(method='POST' onSubmit='/')
+  form.scelta(method='POST' onSubmit='/')
 
     label(for='difficolta') Scegli la difficoltà 
     select#difficolta(name='difficolta')
@@ -25,5 +26,5 @@ block content
 
     br
 
-    input(type='submit' value='Gioca')
+    input.submit(type='submit' value='Gioca')
     
