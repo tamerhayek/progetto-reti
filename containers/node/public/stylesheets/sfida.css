@@ -19,6 +19,9 @@
     justify-content: center;
     text-align: center;
 }
+.sfida * {
+    margin: 5px;
+}
 
 .scelta {
     text-align: center;
